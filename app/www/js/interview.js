@@ -136,6 +136,19 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
                 $scope.participants = participantList['name'];
             }
         }
+        if($scope.questions[k].ANSWERTYPE == "NAME_GENERATOR"){
+
+                var name_generator_alters = {};
+                var alter_split = $scope.answers[array_id].VALUE.split(",");
+                // console.debug(alter_split);
+                for(var i in alter_split)
+                {
+                    var alter_id = alter_split[i];
+                    name_generator_alters[alter_id] = true;
+                }
+                $scope.questions[k].alters = name_generator_alters || {};
+
+        }
 
         if($scope.questions[k].ANSWERTYPE == "ALTER_PROMPT"){
             if(typeof alterPrompts[Object.keys(alters).length] != "undefined")
@@ -442,7 +455,19 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
         $scope.answers[array_id].OTHERSPECIFYTEXT = specify.join(";;");
         console.log($scope.answers[array_id].OTHERSPECIFYTEXT);
     }
-
+    $scope.nameGeneratorSelect = function(alter_id, array_id){
+        var question = $scope.questions[array_id];
+        var alters = [];
+        for(var i in question.alters)
+        {
+            // console.log(i);
+            if(question.alters[i])
+            {
+                alters.push(i);
+            }
+        }
+        $scope.answers[array_id].VALUE = alters.join(",");
+    }
     $scope.multiSelect = function (v, index, array_id){
 
         if(typeof $scope.questions[array_id] != "undefined")

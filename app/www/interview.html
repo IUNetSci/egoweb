@@ -120,10 +120,16 @@
 
 
             <!-- Lists names of alters that have already been generated -->
-            <div id="alterListBox" class="col-xs-12 col-sm-3" ng-if="question.ANSWERTYPE == 'NAME_GENERATOR'">
+            <div id="alterListBox" class="col-xs-12 col-sm-12" ng-if="question.ANSWERTYPE == 'NAME_GENERATOR'">
              <table class="items">
                  <tbody>
                      <tr class="multi" ng-repeat="alter in alters track by $index">
+                         <td style="" id="ordering">
+                             <input
+                                type="checkbox"
+                                ng-model="question.alters[alter.ID]"
+                                ng-change="nameGeneratorSelect(alter.ID, question.array_id)"
+                                <small>{{alter.ID}}</small></td>
                          <td style="width:25px;" id="ordering">{{ $index + 1 }}</td>
                          <td style="width:auto;">{{ alter.NAME }}</td>
                          <!-- Infamous Red X -->
@@ -168,16 +174,19 @@
             </div>
 
 
-            <input
-                name="Answer[{{ question.array_id }}][value]"
-                ng-if="question.ANSWERTYPE == 'NAME_GENERATOR'"
-                ng-model="answers[question.array_id].VALUE"
-                check-answer question-id='{{ question.ID }}'
-                array-id='0'
-                answer-type='{{ question.ANSWERTYPE }}'
-                type="hidden">
+            <br />
+            <br />
+            <div>
+                <input
+                    name="Answer[{{ question.array_id }}][value]"
+                    ng-if="question.ANSWERTYPE == 'NAME_GENERATOR'"
+                    ng-model="answers[question.array_id].VALUE"
+                    check-answer question-id='{{ question.ID }}'
+                    array-id='0'
+                    answer-type='{{ question.ANSWERTYPE }}'
+                    type="text">
 
-
+            </div>
         </div>
 
 
@@ -329,15 +338,36 @@
         </div>
 
         <div ng-repeat="option in options[question.array_id]" style="width:{{ fixedWidth }}" ng-class="{'bg-danger':answerForm.$submitted && errors[question.array_id]}" ng-if="question.ANSWERTYPE == 'MULTIPLE_SELECTION' || options[question.array_id]">
-            <input id="multiselect-1515_{{ $index }}" class="answerInput" ng-disabled="interview.COMPLETED == -1" ng-model="option.checked" type="checkbox" ng-change="multiSelect('{{ option.ID }}', '{{$index}}', '{{question.array_id}}')">
-            <label ng-show="question.ASKINGSTYLELIST == false || !question.ASKINGSTYLELIST" for="multiselect-1515_{{ $index }}">{{ option.NAME }}</label>
-            <input ng-if="(otherSpecify[question.array_id][option.ID] === '' || otherSpecify[question.array_id][option.ID] != false)" ng-show="option.checked" ng-model="otherSpecify[question.array_id][option.ID]" ng-change="changeOther(question.array_id)">
+            <input
+                id="multiselect-1515_{{ $index }}"
+                class="answerInput"
+                ng-disabled="interview.COMPLETED == -1"
+                ng-model="option.checked"
+                type="checkbox"
+                ng-change="multiSelect('{{ option.ID }}', '{{$index}}', '{{question.array_id}}')">
+            <label
+                ng-show="question.ASKINGSTYLELIST == false || !question.ASKINGSTYLELIST"
+                for="multiselect-1515_{{ $index }}">{{ option.NAME }}</label>
+            <input
+                ng-if="(otherSpecify[question.array_id][option.ID] === '' || otherSpecify[question.array_id][option.ID] != false)"
+                ng-show="option.checked"
+                ng-model="otherSpecify[question.array_id][option.ID]"
+                ng-change="changeOther(question.array_id)">
             <a ng-if='audio["OPTION" + option.ID]' class="play-sound" ng-click='playSound("OPTION" + option.ID)' href="javascript:void(0)"><span class="fui-volume"></span></a>
             <br>
         </div>
 
         <div class="hidden">
-            <input question="{{ question.TITLE }}" name="Answer[{{ question.array_id }}][value]" ng-if="question.ANSWERTYPE != 'TEXTUAL' && question.ANSWERTYPE != 'NUMERICAL' && question.ANSWERTYPE != 'TEXTUAL_PP' && question.ANSWERTYPE != 'STORED_VALUE' && question.ANSWERTYPE != 'RANDOM_NUMBER'" id="Answer_{{ question.array_id }}_VALUE"  ng-model="answers[question.array_id].VALUE" check-answer question-id='{{ question.ID }}' array-id='{{ question.array_id }}' answer-type='{{ question.ANSWERTYPE }}'>
+            <input
+                question="{{ question.TITLE }}"
+                name="Answer[{{ question.array_id }}][value]"
+                ng-if="question.ANSWERTYPE != 'TEXTUAL' && question.ANSWERTYPE != 'NUMERICAL' && question.ANSWERTYPE != 'TEXTUAL_PP' && question.ANSWERTYPE != 'STORED_VALUE' && question.ANSWERTYPE != 'RANDOM_NUMBER'"
+                id="Answer_{{ question.array_id }}_VALUE"
+                ng-model="answers[question.array_id].VALUE"
+                check-answer
+                question-id='{{ question.ID }}'
+                array-id='{{ question.array_id }}'
+                answer-type='{{ question.ANSWERTYPE }}'>
             <input name="Answer[{{ question.array_id }}][otherSpecifyText]" value="{{ answers[question.array_id].OTHERSPECIFYTEXT }}">
             <input name="Answer[{{ question.array_id }}][skipReason]" value="{{ answers[question.array_id].SKIPREASON }}">
             <input name="Answer[{{ question.array_id }}][questionId]" value="{{ question.ID }}" type="hidden">
