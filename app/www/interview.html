@@ -149,13 +149,13 @@
                 novalidate>
                 <input name="YII_CSRF_TOKEN" value='{{ csrf }}' type="hidden">
                 <div class="form-group">
-                    <input name="Alters[name]" id="Alters_name" type="text" value="{{ alterName }}">
-                    <!-- <autocomplete
+                    <input name="Alters[name]" id="Alters_name" type="hidden" value="{{ alterName }}">
+                    <autocomplete
                         attr-input-class="answerInput"
                         ng-disabled="interview.COMPLETED == -1"
                         style="float:left"
                         ng-model="alterName"
-                        data="participants"></autocomplete> -->
+                        data="participants"></autocomplete>
                     <input value="{{ interviewId }}" name="Alters[interviewId]" id="Alters_interviewId" type="hidden">
                     <!-- <input class="btn orangebutton alterSubmit" type="submit" name="yt0" value="+ Add"> -->
                     <a class="btn orangebutton alterSubmit" ng-click="addAlter(true)" name="yt0" >+ Add</a>
