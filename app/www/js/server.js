@@ -186,9 +186,7 @@ function deleteNote(){
 app.factory("saveAlter", function($http, $q) {
    var getAlters = function() {
        var saveUrl = document.location.protocol + "//" + document.location.host + "/interview/alter";
-       var serialized_form = $("#alterForm").serialize();
-       console.debug("Serialized Alter Form:", serialized_form);
-       return $.post(saveUrl, serialized_form, function(data) {
+       return $.post(saveUrl, $("#alterForm").serialize(), function(data) {
            return data;
        });
     }
