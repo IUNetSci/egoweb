@@ -80,6 +80,18 @@
     </form>
 </div>
 
+<!-- This Form will be invisible, but acts as an intermediary between the save alters function and the actual alter input form. -->
+<form
+    id="alterForm"
+    name="alterForm"
+    novalidate>
+    <input name="YII_CSRF_TOKEN" value='{{ csrf }}' type="hidden">
+    <input name="Alters[name]" id="real_Alters_name" type="hidden" value="">
+    <input value="{{ interviewId }}" name="Alters[interviewId]" id="real_Alters_interviewId" type="hidden">
+    <input class="btn orangebutton alterSubmit" type="hidden" name="yt0" value="+ Add">
+    </div>
+</form>
+
 <form id="answerForm" name="answerForm" ng-submit="submitForm(answerForm.$valid)" novalidate>
 
 
@@ -92,13 +104,103 @@
     </div>
     <div class="panel" ng-if="hideQ == false" ng-class="{multi: question.ASKINGSTYLELIST == true}" ng-repeat="question in questions">
 
+<!--
+ #     #    #    #     # #######     #####  ####### #     # ####### ######     #    ####### ####### ######
+ ##    #   # #   ##   ## #          #     # #       ##    # #       #     #   # #      #    #     # #     #
+ # #   #  #   #  # # # # #          #       #       # #   # #       #     #  #   #     #    #     # #     #
+ #  #  # #     # #  #  # #####      #  #### #####   #  #  # #####   ######  #     #    #    #     # ######
+ #   # # ####### #     # #          #     # #       #   # # #       #   #   #######    #    #     # #   #
+ #    ## #     # #     # #          #     # #       #    ## #       #    #  #     #    #    #     # #    #
+ #     # #     # #     # #######     #####  ####### #     # ####### #     # #     #    #    ####### #     # -->
+
+
+            <!-- Lists names of alters that have already been generated -->
+            <div id="alterListBox" class="col-xs-12 col-sm-3" ng-if="question.ANSWERTYPE == 'NAME_GENERATOR'">
+             <table class="items">
+                 <tbody>
+                     <tr class="multi" ng-repeat="alter in alters track by $index">
+                         <td style="width:25px;" id="ordering">{{ $index + 1 }}</td>
+                         <td style="width:auto;">{{ alter.NAME }}</td>
+                         <!-- Infamous Red X -->
+                         <td style="width:25px;"><a class="alter-delete" title="Delete" ng-click="removeAlter(alter.ID)"><span class="fui-cross"></span></a></td>
+                     </tr>
+                 </tbody>
+             </table>
+            </div>
+            <div id="alterFormBox" ng-if="question.ANSWERTYPE == 'NAME_GENERATOR'">
+
+
+            <!-- doens't use alter prompt data anymore <div ng-if='alterPrompt != ""'>{{ alterPrompt }}</div> -->
+            <a ng-if='audio["ALTERPROMPT"]' class="play-sound" ng-click='playSound("ALTERPROMPT")' href="javascript:void(0)"><span class="fui-volume"></span></a>
+            <div ng-if='keys(prevAlters).length > 0'>
+                <b>Previous Alters</b><br>
+                <div ng-repeat="pAlter in prevAlters">
+                    <label>{{ pAlter.NAME }}</label><br>
+                </div>
+            </div>
+
+            <!-- Used to be a form -->
+            <!-- Add New Alter -->
+            <div
+                ng-if="keys(alters).length < study.MAXALTERS"
+                id="pretend_alterForm"
+                name="alterForm"
+                ng-submit="addAlter(alterForm.$valid)"
+                novalidate>
+                <input name="YII_CSRF_TOKEN" value='{{ csrf }}' type="hidden">
+                <div class="form-group">
+                    <input name="Alters[name]" id="Alters_name" type="text" value="{{ alterName }}">
+                    <!-- <autocomplete
+                        attr-input-class="answerInput"
+                        ng-disabled="interview.COMPLETED == -1"
+                        style="float:left"
+                        ng-model="alterName"
+                        data="participants"></autocomplete> -->
+                    <input value="{{ interviewId }}" name="Alters[interviewId]" id="Alters_interviewId" type="hidden">
+                    <!-- <input class="btn orangebutton alterSubmit" type="submit" name="yt0" value="+ Add"> -->
+                    <a class="btn orangebutton alterSubmit" ng-click="addAlter(true)" name="yt0" >+ Add</a>
+                </div>
+            </div>
+
+            <!-- Used to be a form -->
+            <!-- Delete alter  -->
+            <div id="deleteAlterForm" name="deleteAlterForm">
+                <input name="YII_CSRF_TOKEN" value='{{ csrf }}' type="hidden">
+                <input id="deleteAlterId" name="Alters[id]" type="hidden">
+                <input value="{{ interviewId }}" name="Alters[interviewId]" type="hidden">
+            </div>
+
+            <input
+                name="Answer[{{ question.array_id }}][value]"
+                ng-if="question.ANSWERTYPE == 'NAME_GENERATOR'"
+                ng-model="answers[question.array_id].VALUE"
+                check-answer question-id='{{ question.ID }}'
+                array-id='0'
+                answer-type='{{ question.ANSWERTYPE }}'
+                type="hidden">
+
+
+        </div>
+
+
+
         <h4 ng-if="question.SUBJECTTYPE == 'EGO_ID' && question.ANSWERTYPE != 'RANDOM_NUMBER' && question.ANSWERTYPE != 'STORED_VALUE'">{{ question.PROMPT }}</h4>
         <h4 ng-if="question.SUBJECTTYPE == 'EGO_ID' && (question.ANSWERTYPE == 'RANDOM_NUMBER' || question.ANSWERTYPE == 'STORED_VALUE')">{{ question.TITLE }}</h4>
 
         <div ng-if="askingStyleList == false && (question.ANSWERTYPE == 'TEXTUAL' || question.ANSWERTYPE == 'NUMERICAL' || question.ANSWERTYPE == 'STORED_VALUE' || question.ANSWERTYPE == 'RANDOM_NUMBER')">
             <input ng-if="question.USEALTERLISTFIELD == 'name' || question.USEALTERLISTFIELD == 'email'" name="Answer[{{ question.array_id }}][value]" value="{{answers[question.array_id].VALUE}}" type="hidden" id="Answer_{{ question.array_id }}_VALUE">
             <autocomplete attr-input-class="answerInput" ng-disabled="interview.COMPLETED == -1" ng-if="question.USEALTERLISTFIELD == 'name' || question.USEALTERLISTFIELD == 'email'" name="Answer[{{ question.array_id }}][value]" ng-model="answers[question.array_id].VALUE" data="participants" check-answer question-id='{{ question.ID }}' array-id='{{ question.array_id }}' answer-type='{{ question.ANSWERTYPE }}'></autocomplete>
-            <input question="{{ question.TITLE }}" class="answerInput" ng-disabled="interview.COMPLETED == -1" ng-if="question.USEALTERLISTFIELD != 'name' && question.USEALTERLISTFIELD != 'email'" ng-change="unSkip('{{question.array_id}}')" id="Answer_{{ question.array_id }}_VALUE" name="Answer[{{ question.array_id }}][value]" ng-model="answers[question.array_id].VALUE" check-answer question-id='{{ question.ID }}' array-id='{{ question.array_id }}' answer-type='{{ question.ANSWERTYPE }}'>
+            <input question="{{ question.TITLE }}"
+                class="answerInput"
+                ng-disabled="interview.COMPLETED == -1"
+                ng-if="question.USEALTERLISTFIELD != 'name' && question.USEALTERLISTFIELD != 'email'"
+                ng-change="unSkip('{{question.array_id}}')"
+                id="Answer_{{ question.array_id }}_VALUE"
+                name="Answer[{{ question.array_id }}][value]"
+                ng-model="answers[question.array_id].VALUE"
+                check-answer
+                question-id='{{ question.ID }}'
+                array-id='{{ question.array_id }}' answer-type='{{ question.ANSWERTYPE }}'>
         </div>
         <div ng-if="question.ANSWERTYPE == 'TEXTUAL_PP'" class="row form-group col-sm-6">
             <textarea question="{{ question.TITLE }}" class="answerInput" ng-disabled="interview.COMPLETED == -1" ng-change="unSkip('{{question.array_id}}')" id="Answer_{{ question.array_id }}_VALUE" name="Answer[{{ question.array_id }}][value]" ng-model="answers[question.array_id].VALUE" check-answer question-id='{{ question.ID }}' array-id='{{ question.array_id }}' answer-type='{{ question.ANSWERTYPE }}'></textarea>
@@ -275,4 +377,3 @@
     </div>
 </form>
 <div class="col-sm-12" ng-if="footer != ''" ng-bind-html="footer">{{ footer }}</div>
-

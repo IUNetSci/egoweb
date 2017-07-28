@@ -17,7 +17,7 @@ $answerTypes = array(
 if($model->subjectType == "EGO_ID")
 	$answerTypes = array_merge($answerTypes, array('STORED_VALUE'=>'STORED_VALUE', 'RANDOM_NUMBER'=>'RANDOM_NUMBER'));
 else
-	$answerTypes = array_merge($answerTypes, array('TIME_SPAN'=>'TIME_SPAN', 'TEXTUAL_PP'=>'TEXTUAL_PP', 'NO_RESPONSE'=>'NO_RESPONSE'));
+	$answerTypes = array_merge($answerTypes, array('TIME_SPAN'=>'TIME_SPAN', 'TEXTUAL_PP'=>'TEXTUAL_PP', 'NO_RESPONSE'=>'NO_RESPONSE', 'NAME_GENERATOR'=>'NAME_GENERATOR'));
 
 ?>
 
@@ -151,7 +151,7 @@ jQuery('input.time-".$model->id."').change(function() {
         		<?php echo $form->error($model,'useAlterListField'); ?>
     		</div>
     	</div>
-    	
+
         <div class="panel-<?php echo $model->id; ?>" id="RANDOM_NUMBER" style="display:none">
                 <div class="form-group">
                     <label class="control-label col-sm-4">Min</label>

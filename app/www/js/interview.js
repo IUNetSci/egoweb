@@ -54,7 +54,7 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
     $scope.conclusion = false;
     $scope.redirect = false;
     $scope.participants = [];
-    
+
     if(typeof hashKey != "undefined"){
         $scope.hashKey = hashKey;
     }else{
@@ -205,7 +205,7 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
 				$scope.phrase += " up to " + $scope.questions[k].MAXCHECKABLEBOXES ;
 			else if ($scope.questions[k].MINCHECKABLEBOXES != "" && $scope.questions[k].MAXCHECKABLEBOXES == "")
 				$scope.phrase += " at least " + $scope.questions[k].MINCHECKABLEBOXES ;
-                
+
 			if($scope.questions[k].MAXCHECKABLEBOXES == 1)
 				$scope.phrase += " response";
 			else
@@ -368,21 +368,24 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
 
     $scope.addAlter = function(isValid) {
         $scope.errors[0] = false;
+        console.debug(alters);
+        var new_alter_name = $("#Alters_name").val().trim();
+        console.debug("New alter name:", new_alter_name);
         for(k in alters){
-            if($("#Alters_name").val() == alters[k].NAME){
+            if(new_alter_name == alters[k].NAME){
                 $scope.errors[0] = 'That name is already listed';
             }
         }
 
         // check pre-defined participant list
         if($scope.participants.length > 0 && study.RESTRICTALTERS == true){
-            if($scope.participants.indexOf($("#Alters_name").val().trim()) == -1){
-                console.log($scope.participants.indexOf($("#Alters_name").val().trim()));
+            if($scope.participants.indexOf(new_alter_name) == -1){
+                console.log($scope.participants.indexOf(new_alter_name));
                 $scope.errors[0] = 'Name not found in list';
             }
         }
 
-        if($("#Alters_name").val().trim() == ""){
+        if(new_alter_name == ""){
             $scope.errors[0] = 'Name cannot be blank';
         }
 
@@ -390,7 +393,9 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
 
         // check to make sure the form is completely valid
         if($scope.errors[0] == false){
+            $("#real_Alters_name").val(new_alter_name);
             saveAlter.getAlters().then(function(data){
+                $("#real_Alters_name").val("");
                 alters = JSON.parse(data);
                 for(k in alters){
                     if(typeof prevAlters[k] != "undefined")
@@ -399,6 +404,8 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
                 $route.reload();
             });
         }
+
+        return false;
     };
 
     $scope.removeAlter = function(alterId) {
@@ -570,7 +577,7 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
     	console.log(date);
 
     }
-    
+
     $scope.timeBits = function(timeUnits, span)
     {
         timeArray = [];
@@ -769,7 +776,7 @@ app.directive('checkAnswer', [function (){
     				}
     			}
                 console.log("check list range: " + checks);
-    
+
     			if(checks < question.MINLISTRANGE || checks > question.MAXLISTRANGE){
     				errorMsg = "";
     				if(question.MINLISTRANGE && question.MAXLISTRANGE){
@@ -782,10 +789,10 @@ app.directive('checkAnswer', [function (){
     				}else{
     						errorMsg = "at least " + question.MINLISTRANGE;
     				}
-    
+
                     valid = false;
                     scope.errors[array_id] = "Please select "  + errorMsg + " response(s).  You selected " + checks;
-    
+
     			}else{
         			for(k in scope.errors){
             			if(scope.errors[k].match("Please select "))
@@ -793,7 +800,7 @@ app.directive('checkAnswer', [function (){
         			}
     			}
     		}
-		
+
                 ngModel.$setValidity('checkAnswer', valid);
                 return valid ? value : undefined;
             });
@@ -966,7 +973,7 @@ app.directive('checkAnswer', [function (){
     					checks++;
     				}
     			}
-    
+
                 console.log("check list range: " + checks);
 
     			if(checks < question.MINLISTRANGE || checks > question.MAXLISTRANGE){
@@ -981,7 +988,7 @@ app.directive('checkAnswer', [function (){
     				}else{
     						errorMsg = "at least " + question.MINLISTRANGE;
     				}
-    
+
                     valid = false;
                     scope.errors[array_id] = "Please select "  + errorMsg + " response(s).  You selected " + checks;
 
@@ -997,7 +1004,7 @@ app.directive('checkAnswer', [function (){
                     }
     			}
     		}
-		
+
             ngModel.$setValidity('checkAnswer', valid);
             return value;
           });
@@ -1044,10 +1051,10 @@ function buildQuestions(pageNumber, interviewId){
 		ego_question_list = new Object;
 		network_question_list = new Object;
 		prompt = "";
-                        
+
 		for(j in ego_questions){
             if (ego_questions[j].TITLE.indexOf("VS3.") >= 0){
-                break;                
+                break;
             }
             ego_questions[j].array_id = ego_questions[j].ID;
 			if(Object.keys(ego_question_list).length > 0 && (parseInt(ego_questions[j].ASKINGSTYLELIST) != 1 || prompt != ego_questions[j].PROMPT.replace(/<\/*[^>]*>/gm, '').replace(/(\r\n|\n|\r)/gm,""))){
@@ -1460,13 +1467,13 @@ function buildQuestions(pageNumber, interviewId){
         for(j in ego_questions){
 
             if (ego_questions[j].TITLE.indexOf("VS3.") >= 0){
-                second_ego_q++;                
+                second_ego_q++;
             }
-        
+
             if (second_ego_q < 1){
-                continue;                
+                continue;
             }
-                    
+
             ego_questions[j].array_id = ego_questions[j].ID;
 			if(Object.keys(ego_question_list).length > 0 && (parseInt(ego_questions[j].ASKINGSTYLELIST) != 1 || prompt != ego_questions[j].PROMPT.replace(/<\/*[^>]*>/gm, '').replace(/(\r\n|\n|\r)/gm,""))){
 				if(pageNumber == i){
@@ -1521,8 +1528,8 @@ function buildQuestions(pageNumber, interviewId){
 			}
 			i++;
 			page[i] = new Object;
-		}        
-        
+		}
+
 		conclusion = new Object;
 		conclusion.ANSWERTYPE = "CONCLUSION";
 		conclusion.PROMPT = study.CONCLUSION;
@@ -2518,12 +2525,12 @@ function buildNav(pageNumber, scope){
     for(j in ego_questions){
         if (ego_questions[j].TITLE.indexOf("VS3.") >= 0)
             skip_ego_questions = j;
-    }        
+    }
 
     // first pass at ego questions
     for(j in ego_questions){
         if (ego_questions[j].TITLE.indexOf("VS3.") >= 0){
-            break;                
+            break;
         }
 		if(evalExpression(ego_questions[j].ANSWERREASONEXPRESSIONID, interviewId) != true)
 			continue;
@@ -2563,7 +2570,7 @@ function buildNav(pageNumber, scope){
 		for(j in alter_questions){
             prompt = "";
 			var alter_question_list = '';
-			
+
 			if(parseInt(alter_questions[j].ASKINGSTYLELIST) == 1 || (alter_non_list_qs.length > 0 && parseInt(alter_questions[j].ASKINGSTYLELIST) != 1 && alter_questions[j].PREFACE != "")){
     			if(alter_non_list_qs.length > 0){
         			for(k in alters){
@@ -2691,7 +2698,7 @@ function buildNav(pageNumber, scope){
     			    	pages[i] = this.checkPage(i, pageNumber, alter_pair_questions[j].TITLE + " - " + alters[k].NAME + "and" + alters2[l].NAME);
     			    	i++;
     			    }
-    			    
+
 		    	}
 		    	if(alter_pair_question_list){
 					if(preface.PROMPT != ""){
@@ -2743,15 +2750,15 @@ function buildNav(pageNumber, scope){
     // second ego round - DSM 032217
     var second_ego_nav = 0;
 	for(j in ego_questions){
-                
+
         if (ego_questions[j].TITLE.indexOf("VS3.") >= 0){
-            second_ego_nav++;                
+            second_ego_nav++;
         }
-        
+
         if (second_ego_nav < 1){
-            continue;                
+            continue;
         }
-        
+
 		if(evalExpression(ego_questions[j].ANSWERREASONEXPRESSIONID, interviewId) != true)
 			continue;
 
@@ -2779,8 +2786,8 @@ function buildNav(pageNumber, scope){
 		pages[i] = this.checkPage(i, pageNumber, ego_question_list.TITLE);
 		ego_question_list = '';
 		i++;
-	}    
-    
+	}
+
 	pages[i] = this.checkPage(i, pageNumber, "CONCLUSION");
 	return pages;
 }
@@ -2803,7 +2810,7 @@ function fixHeader(){
     columnWidths();
 	// Set this variable with the height of your sidebar + header
 	var offsetLeft = parseInt($("#content").css("margin-left")) + parseInt($("#content").css("padding-left"))
-	var offsetPixels = $(".navbar").height(); 
+	var offsetPixels = $(".navbar").height();
     $("#content").css({"background-attachment":"fixed"});
     if(!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
     	$(window).scroll(function(event) {
