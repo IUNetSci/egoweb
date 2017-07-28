@@ -91,6 +91,11 @@
     <input class="btn orangebutton alterSubmit" type="hidden" name="yt0" value="+ Add">
     </div>
 </form>
+<form id="deleteAlterForm" name="deleteAlterForm">
+    <input name="YII_CSRF_TOKEN" value='{{ csrf }}' type="hidden">
+    <input id="deleteAlterId" name="Alters[id]" type="hidden">
+    <input value="{{ interviewId }}" name="Alters[interviewId]" type="hidden">
+</form>
 
 <form id="answerForm" name="answerForm" ng-submit="submitForm(answerForm.$valid)" novalidate>
 
@@ -162,13 +167,6 @@
                 </div>
             </div>
 
-            <!-- Used to be a form -->
-            <!-- Delete alter  -->
-            <div id="deleteAlterForm" name="deleteAlterForm">
-                <input name="YII_CSRF_TOKEN" value='{{ csrf }}' type="hidden">
-                <input id="deleteAlterId" name="Alters[id]" type="hidden">
-                <input value="{{ interviewId }}" name="Alters[interviewId]" type="hidden">
-            </div>
 
             <input
                 name="Answer[{{ question.array_id }}][value]"
