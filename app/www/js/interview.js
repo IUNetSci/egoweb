@@ -410,10 +410,14 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
             $("#real_Alters_name").val(new_alter_name);
             saveAlter.getAlters().then(function(data){
                 $("#real_Alters_name").val("");
-                console.debug(data);
-                // $scope.questions[array_id].alters[]
                 alters = JSON.parse(data);
+                // console.debug(alters);
                 for(k in alters){
+                    if(alters[k].NAME == new_alter_name)
+                    {
+                        $scope.questions[array_id].alters[alters[k].ID] = true;
+                        $scope.nameGeneratorSelect(alters[k].ID, array_id);
+                    }
                     if(typeof prevAlters[k] != "undefined")
                         delete prevAlters[k];
                 }
