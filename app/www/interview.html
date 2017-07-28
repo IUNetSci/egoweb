@@ -109,82 +109,81 @@
     </div>
     <div class="panel" ng-if="hideQ == false" ng-class="{multi: question.ASKINGSTYLELIST == true}" ng-repeat="question in questions">
 
-<!--
- #     #    #    #     # #######     #####  ####### #     # ####### ######     #    ####### ####### ######
- ##    #   # #   ##   ## #          #     # #       ##    # #       #     #   # #      #    #     # #     #
- # #   #  #   #  # # # # #          #       #       # #   # #       #     #  #   #     #    #     # #     #
- #  #  # #     # #  #  # #####      #  #### #####   #  #  # #####   ######  #     #    #    #     # ######
- #   # # ####### #     # #          #     # #       #   # # #       #   #   #######    #    #     # #   #
- #    ## #     # #     # #          #     # #       #    ## #       #    #  #     #    #    #     # #    #
- #     # #     # #     # #######     #####  ####### #     # ####### #     # #     #    #    ####### #     # -->
+        <!--
+         #     #    #    #     # #######     #####  ####### #     # ####### ######     #    ####### ####### ######
+         ##    #   # #   ##   ## #          #     # #       ##    # #       #     #   # #      #    #     # #     #
+         # #   #  #   #  # # # # #          #       #       # #   # #       #     #  #   #     #    #     # #     #
+         #  #  # #     # #  #  # #####      #  #### #####   #  #  # #####   ######  #     #    #    #     # ######
+         #   # # ####### #     # #          #     # #       #   # # #       #   #   #######    #    #     # #   #
+         #    ## #     # #     # #          #     # #       #    ## #       #    #  #     #    #    #     # #    #
+         #     # #     # #     # #######     #####  ####### #     # ####### #     # #     #    #    ####### #     #
+        -->
 
 
-            <!-- Lists names of alters that have already been generated -->
-            <div id="alterListBox" class="col-xs-12 col-sm-12" ng-if="question.ANSWERTYPE == 'NAME_GENERATOR'">
-             <table class="items">
-                 <tbody>
-                     <tr class="multi" ng-repeat="alter in alters track by $index">
-                         <td style="" id="ordering">
-                             <input
+        <!-- Lists names of alters that have already been generated -->
+        <div id="alterListBox" class="name-generator col-xs-12 col-sm-12" ng-if="question.ANSWERTYPE == 'NAME_GENERATOR'">
+            <table class="items" width="100%">
+                <tbody>
+                    <tr class="multi" ng-repeat="alter in alters track by $index">
+                        <td style="" id="ordering">
+                            <input
                                 type="checkbox"
                                 ng-model="question.alters[alter.ID]"
-                                ng-change="nameGeneratorSelect(alter.ID, question.array_id)"
-                                <small>{{alter.ID}}</small></td>
-                         <td style="width:25px;" id="ordering">{{ $index + 1 }}</td>
-                         <td style="width:auto;">{{ alter.NAME }}</td>
-                         <!-- Infamous Red X -->
-                         <td style="width:25px;"><a class="alter-delete" title="Delete" ng-click="removeAlter(alter.ID)"><span class="fui-cross"></span></a></td>
-                     </tr>
-                 </tbody>
-             </table>
-            </div>
-            <div id="alterFormBox" ng-if="question.ANSWERTYPE == 'NAME_GENERATOR'">
+                                ng-change="nameGeneratorSelect(alter.ID, question.array_id)" >
+                                <small></small>
+                        </td>
+                        <td style="width:25px;" id="ordering">{{ $index + 1 }}</td>
+                        <td style="width:auto;">{{ alter.NAME }}</td>
+                        <!-- Infamous Red X -->
+                        <td style="width:25px;"><a class="alter-delete" title="Delete" ng-click="removeAlter(alter.ID)"><span class="fui-cross"></span></a></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td colspan="2">
+                            <div
+                                ng-if="keys(alters).length < study.MAXALTERS"
+                                class="pretend_alterForm"
+                                name="alterForm"
+                                ng-submit="addAlter(alterForm.$valid)"
+                                novalidate>
+                                <div class="">
+                                    <input name="Alters[name]" id="Alters_name" type="hidden" value="{{ alterName }}">
+                                    <autocomplete
+                                    attr-input-class="answerInput"
+                                    ng-disabled="interview.COMPLETED == -1"
+                                    ng-model="alterName"
+                                    data="participants"></autocomplete>
+                                    <!-- <input value="{{ interviewId }}" name="Alters[interviewId]" id="Alters_interviewId" type="hidden"> -->
+                                    <!-- <input class="btn orangebutton alterSubmit" type="submit" name="yt0" value="+ Add"> -->
+                                    <a class="btn orangebutton alterSubmit" ng-click="addAlter(true, question.array_id)" name="yt0" >+ Add</a>
+                                </div>
+                            </div>
+                        </td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+            <style>
+                .name-generator .autocomplete input
+                {
+                    width: auto;
+                }
+                .name-generator .pretend_alterForm *
+                {
+                    display: inline-block;
+                    float: none;
+                }
+            </style>
 
-
-            <!-- doens't use alter prompt data anymore <div ng-if='alterPrompt != ""'>{{ alterPrompt }}</div> -->
-            <a ng-if='audio["ALTERPROMPT"]' class="play-sound" ng-click='playSound("ALTERPROMPT")' href="javascript:void(0)"><span class="fui-volume"></span></a>
-            <div ng-if='keys(prevAlters).length > 0'>
-                <b>Previous Alters</b><br>
-                <div ng-repeat="pAlter in prevAlters">
-                    <label>{{ pAlter.NAME }}</label><br>
-                </div>
-            </div>
-
-            <!-- Used to be a form -->
-            <!-- Add New Alter -->
-            <div
-                ng-if="keys(alters).length < study.MAXALTERS"
-                id="pretend_alterForm"
-                name="alterForm"
-                ng-submit="addAlter(alterForm.$valid)"
-                novalidate>
-                <input name="YII_CSRF_TOKEN" value='{{ csrf }}' type="hidden">
-                <div class="form-group">
-                    <input name="Alters[name]" id="Alters_name" type="hidden" value="{{ alterName }}">
-                    <autocomplete
-                        attr-input-class="answerInput"
-                        ng-disabled="interview.COMPLETED == -1"
-                        style="float:left"
-                        ng-model="alterName"
-                        data="participants"></autocomplete>
-                    <input value="{{ interviewId }}" name="Alters[interviewId]" id="Alters_interviewId" type="hidden">
-                    <!-- <input class="btn orangebutton alterSubmit" type="submit" name="yt0" value="+ Add"> -->
-                    <a class="btn orangebutton alterSubmit" ng-click="addAlter(true)" name="yt0" >+ Add</a>
-                </div>
-            </div>
-
-
-            <br />
-            <br />
             <div>
                 <input
-                    name="Answer[{{ question.array_id }}][value]"
-                    ng-if="question.ANSWERTYPE == 'NAME_GENERATOR'"
-                    ng-model="answers[question.array_id].VALUE"
-                    check-answer question-id='{{ question.ID }}'
-                    array-id='0'
-                    answer-type='{{ question.ANSWERTYPE }}'
-                    type="text">
+                name="Answer[{{ question.array_id }}][value]"
+                ng-if="question.ANSWERTYPE == 'NAME_GENERATOR'"
+                ng-model="answers[question.array_id].VALUE"
+                check-answer question-id='{{ question.ID }}'
+                array-id='0'
+                answer-type='{{ question.ANSWERTYPE }}'
+                type="text">
 
             </div>
         </div>

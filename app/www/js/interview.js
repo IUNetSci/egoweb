@@ -379,7 +379,8 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
         }
     };
 
-    $scope.addAlter = function(isValid) {
+    $scope.addAlter = function(isValid, array_id) {
+        array_id = array_id || 0;
         $scope.errors[0] = false;
         console.debug(alters);
         var new_alter_name = $("#Alters_name").val().trim();
@@ -409,6 +410,8 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
             $("#real_Alters_name").val(new_alter_name);
             saveAlter.getAlters().then(function(data){
                 $("#real_Alters_name").val("");
+                console.debug(data);
+                // $scope.questions[array_id].alters[]
                 alters = JSON.parse(data);
                 for(k in alters){
                     if(typeof prevAlters[k] != "undefined")
