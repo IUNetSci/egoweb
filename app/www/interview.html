@@ -164,6 +164,10 @@
                 </tbody>
             </table>
             <style>
+                .name-generator
+                {
+                    padding-top: 2rem;
+                }
                 .name-generator .autocomplete input
                 {
                     width: auto;
@@ -172,6 +176,11 @@
                 {
                     display: inline-block;
                     float: none;
+                }
+                .name-generator input[type=checkbox]
+                {
+                    transform: scale(2);
+                    margin: 1rem;
                 }
             </style>
 
@@ -183,7 +192,7 @@
                 check-answer question-id='{{ question.ID }}'
                 array-id='0'
                 answer-type='{{ question.ANSWERTYPE }}'
-                type="text">
+                type="hidden">
 
             </div>
         </div>

@@ -464,6 +464,7 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
     }
     $scope.nameGeneratorSelect = function(alter_id, array_id){
         var question = $scope.questions[array_id];
+        question.alters[alter_id] = true;
         var alters = [];
         for(var i in question.alters)
         {
