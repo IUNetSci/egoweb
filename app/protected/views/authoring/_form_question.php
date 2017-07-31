@@ -28,7 +28,7 @@ $form=$this->beginWidget('CActiveForm', array(
 	"htmlOptions"=>array("class"=>"form-horizontal")
 ));
 ?>
-<div class="form" style="height:315px; overflow-y:auto;">
+<div class="form" style="overflow-y:auto;">
 
 <?php echo $form->errorSummary($model); ?>
 <?php echo $form->hiddenField($model,'id',array('value'=>$model->id)); ?>

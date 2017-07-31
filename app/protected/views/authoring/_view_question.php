@@ -8,7 +8,7 @@
 
 	<h3><?php echo $data->title; ?><?php if($data->answerType == "MULTIPLE_SELECTION"): ?> <div class="optionLink" style="height:20px; width:60px;float:right">Options</div><?php endif; ?>
 	</h3>
-	<div id="data-<?php echo $data->id; ?>" style="height:350px; overflow-y:scroll;">
+	<div id="data-<?php echo $data->id; ?>" style="">
 	</div>
 
 	<div style="float:left; width:500px; display:none">
