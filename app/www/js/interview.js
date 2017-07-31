@@ -140,12 +140,10 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
                 var name_generator_alters = {};
                 var alter_array = [];
 
-                var alter_string = $scope.answers[array_id];
-                if(alter_string)
-                    alter_string = alter_string.VALUE;
-                if(alter_string)
+                var answer = $scope.answers[array_id];
+                if(answer)
                 {
-                    var alter_split = alter_string.split(",");
+                    var alter_split = answer.VALUE.split(",");
                     // console.debug(alter_split);
                     for(var i in alter_split)
                     {
@@ -157,7 +155,7 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
                         }
                     }
                 }
-                $scope.questions[k].alters = name_generator_alters || {};
+                $scope.answers[array_id].alters = name_generator_alters || {};
                 $scope.answers[array_id].VALUE = alter_array.join(",");
         }
 
@@ -426,7 +424,7 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
                 for(k in alters){
                     if(alters[k].NAME == new_alter_name)
                     {
-                        $scope.questions[array_id].alters[alters[k].ID] = true;
+                        $scope.answers[array_id].alters[alters[k].ID] = true;
                         $scope.nameGeneratorSelect(alters[k].ID, array_id);
                     }
                     if(typeof prevAlters[k] != "undefined")
@@ -449,7 +447,7 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
                 var alter_array = []
                 if(answer.VALUE)
                 {
-                    var alter_split = alter_string.split(",");
+                    var alter_split = answer.VALUE.split(",");
                     for(var i in alter_split)
                     {
                         var alter_id = alter_split[i];
@@ -496,13 +494,12 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
         console.log($scope.answers[array_id].OTHERSPECIFYTEXT);
     }
     $scope.nameGeneratorSelect = function(alter_id, array_id){
-        var question = $scope.questions[array_id];
-        question.alters[alter_id] = true;
+        var answer = $scope.answers[array_id];
         var alters = [];
-        for(var i in question.alters)
+        for(var i in answer.alters)
         {
             // console.log(i);
-            if(question.alters[i])
+            if(answer.alters[i])
             {
                 alters.push(i);
             }

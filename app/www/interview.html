@@ -128,14 +128,14 @@
                         <td style="" id="ordering">
                             <input
                                 type="checkbox"
-                                ng-model="question.alters[alter.ID]"
+                                ng-model="answers[question.array_id].alters[alter.ID]"
                                 ng-change="nameGeneratorSelect(alter.ID, question.array_id)" >
                                 <small></small>
                         </td>
                         <td style="width:25px;" id="ordering">{{ $index + 1 }}</td>
                         <td style="width:auto;">{{ alter.NAME }}</td>
                         <!-- Infamous Red X -->
-                        <td style="width:25px;"><a class="alter-delete" title="Delete" ng-click="removeAlter(alter.ID)"><span class="fui-cross"></span></a></td>
+                        <td style="width:25px;"><a class="alter-delete" title="Delete" ng-click="removeAlter(alter.ID, this)"><span class="fui-cross"></span></a></td>
                     </tr>
                     <tr>
                         <td>&nbsp;</td>
