@@ -139,14 +139,19 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
         if($scope.questions[k].ANSWERTYPE == "NAME_GENERATOR"){
 
                 var name_generator_alters = {};
-                var alter_split = $scope.answers[array_id].VALUE.split(",");
-                // console.debug(alter_split);
-                for(var i in alter_split)
+                var alter_string = $scope.answers[array_id];
+                if(alter_string)
                 {
-                    var alter_id = alter_split[i];
-                    name_generator_alters[alter_id] = true;
+                    var alter_split = alter_string.VALUE.split(",");
+                    // console.debug(alter_split);
+                    for(var i in alter_split)
+                    {
+                        var alter_id = alter_split[i];
+                        name_generator_alters[alter_id] = true;
+                    }
                 }
                 $scope.questions[k].alters = name_generator_alters || {};
+
 
         }
 
