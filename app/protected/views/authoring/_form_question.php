@@ -17,7 +17,11 @@ $answerTypes = array(
 if($model->subjectType == "EGO_ID")
 	$answerTypes = array_merge($answerTypes, array('STORED_VALUE'=>'STORED_VALUE', 'RANDOM_NUMBER'=>'RANDOM_NUMBER'));
 else
-	$answerTypes = array_merge($answerTypes, array('TIME_SPAN'=>'TIME_SPAN', 'TEXTUAL_PP'=>'TEXTUAL_PP', 'NO_RESPONSE'=>'NO_RESPONSE', 'NAME_GENERATOR'=>'NAME_GENERATOR'));
+	$answerTypes = array_merge($answerTypes, array('TIME_SPAN'=>'TIME_SPAN', 'TEXTUAL_PP'=>'TEXTUAL_PP', 'NO_RESPONSE'=>'NO_RESPONSE'));
+
+if($model->subjectType == "EGO")
+	$answerTypes = array_merge($answerTypes, array('NAME_GENERATOR'=>'NAME_GENERATOR'));
+
 
 ?>
 
