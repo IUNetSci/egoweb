@@ -137,22 +137,28 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
             }
         }
         if($scope.questions[k].ANSWERTYPE == "NAME_GENERATOR"){
-
                 var name_generator_alters = {};
+                var alter_array = [];
+
                 var alter_string = $scope.answers[array_id];
                 if(alter_string)
+                    alter_string = alter_string.VALUE;
+                if(alter_string)
                 {
-                    var alter_split = alter_string.VALUE.split(",");
+                    var alter_split = alter_string.split(",");
                     // console.debug(alter_split);
                     for(var i in alter_split)
                     {
                         var alter_id = alter_split[i];
-                        name_generator_alters[alter_id] = true;
+                        if($scope.alters[alter_id])
+                        {
+                            name_generator_alters[alter_id] = true;
+                            alter_array.push(alter_id);
+                        }
                     }
                 }
                 $scope.questions[k].alters = name_generator_alters || {};
-
-
+                $scope.answers[array_id].VALUE = alter_array.join(",");
         }
 
         if($scope.questions[k].ANSWERTYPE == "ALTER_PROMPT"){
@@ -387,9 +393,9 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
     $scope.addAlter = function(isValid, array_id) {
         array_id = array_id || 0;
         $scope.errors[0] = false;
-        console.debug(alters);
+        // console.debug(alters);
         var new_alter_name = $("#Alters_name").val().trim();
-        console.debug("New alter name:", new_alter_name);
+        // console.debug("New alter name:", new_alter_name);
         for(k in alters){
             if(new_alter_name == alters[k].NAME){
                 $scope.errors[0] = 'That name is already listed';
@@ -399,7 +405,7 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
         // check pre-defined participant list
         if($scope.participants.length > 0 && study.RESTRICTALTERS == true){
             if($scope.participants.indexOf(new_alter_name) == -1){
-                console.log($scope.participants.indexOf(new_alter_name));
+                // console.log($scope.participants.indexOf(new_alter_name));
                 $scope.errors[0] = 'Name not found in list';
             }
         }
@@ -408,7 +414,7 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
             $scope.errors[0] = 'Name cannot be blank';
         }
 
-        console.log($scope.errors[0]);
+        // console.log($scope.errors[0]);
 
         // check to make sure the form is completely valid
         if($scope.errors[0] == false){
@@ -433,13 +439,35 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
         return false;
     };
 
-    $scope.removeAlter = function(alterId) {
+    $scope.removeAlter = function(alterId, scope) {
         $("#deleteAlterId").val(alterId);
-        console.log(alterId);
+        for(var answer_index in $scope.answers)
+        {
+            var answer = $scope.answers[answer_index];
+            if(answer.ANSWERTYPE == "NAME_GENERATOR")
+            {
+                var alter_array = []
+                if(answer.VALUE)
+                {
+                    var alter_split = alter_string.split(",");
+                    for(var i in alter_split)
+                    {
+                        var alter_id = alter_split[i];
+                        if(alter_id != alterId)
+                        {
+                            alter_array.push(alter_id);
+                        }
+                    }
+                }
+                $scope.answers[answer_index].VALUE = alter_array.join(",");
+            }
+        }
+
+
         // check to make sure the form is completely valid
         deleteAlter.getAlters().then(function(data){
             alters = JSON.parse(data);
-	    for(k in alters){
+	        for(k in alters){
                 if (alters[k].ID == alterId ){
                     delete alters[k];
                 }
