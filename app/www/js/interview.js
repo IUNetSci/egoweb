@@ -1173,16 +1173,17 @@ function buildQuestions(pageNumber, interviewId){
 			page[i] = new Object;
 		}
 
-		// if(pageNumber == i && study.ALTERPROMPT.replace(/<\/*[^>]*>/gm, '').replace(/(\r\n|\n|\r)/gm,"") != ""){
-		// 	alter_prompt = new Object;
-		// 	alter_prompt.ANSWERTYPE = "ALTER_PROMPT";
-		// 	alter_prompt.PROMPT = study.ALTERPROMPT;
-		// 	alter_prompt.studyId = study.ID;
-		// 	page[i][0] = alter_prompt;
-		// 	return page[i];
-		// }
-		// i++;
-		// page[i] = new Object;
+		if(pageNumber == i && study.ALTERPROMPT.replace(/<\/*[^>]*>/gm, '').replace(/(\r\n|\n|\r)/gm,"") != ""){
+			alter_prompt = new Object;
+			alter_prompt.ANSWERTYPE = "ALTER_PROMPT";
+			alter_prompt.PROMPT = study.ALTERPROMPT;
+			alter_prompt.studyId = study.ID;
+			page[i][0] = alter_prompt;
+			return page[i];
+		}
+		i++;
+		page[i] = new Object;
+        
         // console.debug(alter_questions);
 		if(Object.keys(alters).length > 0){
 			for(j in alter_questions){

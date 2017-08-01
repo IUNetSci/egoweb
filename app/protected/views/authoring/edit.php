@@ -182,7 +182,7 @@ function deleteAlterList(studyId){
 	<div class="col-sm-6">
 			<?php echo $form->labelEx($model,'alterPrompt'); ?>
 			<div class="well" style="margin-bottom: 0;">
-			<p style="line-height: 1.25;"><b>The Alter Prompt has been disabled.</b><small><br /> Please use the Ego Question response type NAME_GENERATOR instead.</small></p>
+			<p style="line-height: 1.25;"><b>The Alter Prompt has been deprecated.</b><small><br /> Please use the Ego Question response type NAME_GENERATOR instead.</small></p>
 			<div class="audioPlay" id="STUDY_ALTERPROMPT"><?php if(file_exists(Yii::app()->basePath."/../audio/".$model->id . "/STUDY/ALTERPROMPT.mp3")): ?><a class="play-sound" onclick="playSound($(this).attr('file'))" href="#" file="/audio/<?= $model->id . "/STUDY/ALTERPROMPT.mp3"; ?>"><span class="fui-volume"></span></a><?php endif; ?></div>
 			<!-- <?php if(!$model->isNewRecord):?>
 			<a class="btn btn-primary pull-right btn-xs" data-toggle="modal" data-target="#myModal" href="/authoring/uploadaudio?type=STUDY&id=ALTERPROMPT&studyId=<?= $model->id; ?>">Upload Audio</a>
