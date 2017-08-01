@@ -49,8 +49,10 @@ $(function(){
 		}
 	});
 	$('#Study_alterPrompt').summernote({
-		toolbar:noteBar,
-		height:200,
+		toolbar: [
+		    ['misc', ['codeview']],
+		],
+		height:80,
 		/*onImageUpload: function(files, editor, welEditable) {
 			uploadImage(files[0], editor, welEditable);
 		},*/
@@ -154,10 +156,12 @@ function deleteAlterList(studyId){
 
 <div class="form-group">
     <div class="col-sm-6">
-        <?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>100, 'class'=>'form-control')); ?>
+        <label>Study Name: </label>
+		<?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>100, 'class'=>'form-control')); ?>
     </div>
     <div class="col-sm-6">
-        <label class='control-label'>Last Updated <?php echo $model->modified; ?></label>
+        <label class='control-label'>Last Updated:</label>
+		<div><?php echo date("r", strtotime($model->modified)); ?></div>
     </div>
 </div>
 
@@ -176,14 +180,18 @@ function deleteAlterList(studyId){
 	</div>
 
 	<div class="col-sm-6">
-		<?php echo $form->labelEx($model,'alterPrompt'); ?>
-		<div class="audioPlay" id="STUDY_ALTERPROMPT"><?php if(file_exists(Yii::app()->basePath."/../audio/".$model->id . "/STUDY/ALTERPROMPT.mp3")): ?><a class="play-sound" onclick="playSound($(this).attr('file'))" href="#" file="/audio/<?= $model->id . "/STUDY/ALTERPROMPT.mp3"; ?>"><span class="fui-volume"></span></a><?php endif; ?></div>
-		<?php if(!$model->isNewRecord):?>
-		<a class="btn btn-primary pull-right btn-xs" data-toggle="modal" data-target="#myModal" href="/authoring/uploadaudio?type=STUDY&id=ALTERPROMPT&studyId=<?= $model->id; ?>">Upload Audio</a>
-		<?php endif;?>
-		<?php echo $form->textArea($model,'alterPrompt',array('rows'=>6, 'cols'=>50)); ?>
-		<?php echo $form->error($model,'alterPrompt'); ?>
+			<?php echo $form->labelEx($model,'alterPrompt'); ?>
+			<div class="well" style="margin-bottom: 0;">
+			<p style="line-height: 1.25;"><b>The Alter Prompt has been deprecated.</b><small><br /> Please use the Ego Question response type NAME_GENERATOR instead.</small></p>
+			<div class="audioPlay" id="STUDY_ALTERPROMPT"><?php if(file_exists(Yii::app()->basePath."/../audio/".$model->id . "/STUDY/ALTERPROMPT.mp3")): ?><a class="play-sound" onclick="playSound($(this).attr('file'))" href="#" file="/audio/<?= $model->id . "/STUDY/ALTERPROMPT.mp3"; ?>"><span class="fui-volume"></span></a><?php endif; ?></div>
+			<!-- <?php if(!$model->isNewRecord):?>
+			<a class="btn btn-primary pull-right btn-xs" data-toggle="modal" data-target="#myModal" href="/authoring/uploadaudio?type=STUDY&id=ALTERPROMPT&studyId=<?= $model->id; ?>">Upload Audio</a>
+			<?php endif;?> -->
+			<?php echo $form->textArea($model,'alterPrompt',array( 'rows'=>4, 'cols'=>50)); ?>
+			<?php echo $form->error($model,'alterPrompt'); ?>
+		</div>
 	</div>
+
 
 	<div class="col-sm-6">
 		<?php echo $form->labelEx($model,'conclusion'); ?>
