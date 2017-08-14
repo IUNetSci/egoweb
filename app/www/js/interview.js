@@ -360,6 +360,25 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
     }
 
     $scope.submitForm = function(isValid) {
+        var others = $(".otherSpecify");
+        var emptyOthers = 0;
+        if(others.length > 0)
+        {
+            others.each(function(index, elem){
+
+                $(elem).next(".otherSpecifyError").hide();
+                if(!$(elem).val())
+                {
+                    emptyOthers ++;
+                    $(elem).next(".otherSpecifyError").show();
+                }
+            });
+        }
+        if(emptyOthers > 0)
+        {
+            return false;
+        }
+
         // check to make sure the form is completely valid
         if (isValid) {
             save($scope.questions, $routeParams.page, $location.absUrl().replace($location.url(),''), $scope);
