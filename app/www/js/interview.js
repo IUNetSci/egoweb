@@ -360,6 +360,16 @@ app.controller('interviewController', ['$scope', '$log', '$routeParams','$sce', 
     }
 
     $scope.submitForm = function(isValid) {
+        if($scope.conclusion === true)
+        {
+            var confirmed = confirm("***  Clicking Finish will complete the survey.  Once completed, you will not be able to change or update answers.  ***");
+            if(!confirmed)
+            {
+                isValid = false;
+                return false;
+            }
+        }
+
         var others = $(".otherSpecify");
         var emptyOthers = 0;
         if(others.length > 0)

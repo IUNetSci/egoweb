@@ -566,6 +566,16 @@ app.controller('studiesController', ['$scope', '$log', '$routeParams', '$sce', '
     }
 
     $scope.upload = function(studyId){
+
+        var confirmed = confirm("***  Uploading these interviews will remove them from this device.  ***");
+        if(!confirmed)
+        {
+            return false;
+        }
+
+        // $('#status').html('Uploaded');
+        // return false;
+
         $('#status').html('Uploading...');
     	$("#uploader-" + studyId).prop('disabled', true);
 
