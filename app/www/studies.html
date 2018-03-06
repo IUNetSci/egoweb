@@ -1,4 +1,7 @@
+
+
 <div id="status"></div>
+
 <form id="hiddenForm" method="post" class="hidden">
 	<textarea name="data" id="data"></textarea>
 </form>
@@ -25,4 +28,17 @@
 </div>
 <div ng-if="!studies.length">
 	There are no studies to show.
+</div>
+
+<div id="loadingOverlay"
+style="display: none; position: absolute; background: rgba(51, 51, 51, .75); top: 0; left: 0; right: 0; bottom: 0; z-index: 1000;"
+
+>
+<div class="" style="border-radius: 1em; text-align: center; margin: 5em auto 0 auto; font-weight: bold; background: rgba(229, 131, 32, 1); padding: 2em; width: 60%">
+	Uploading...
+	<div class="timer" style="font-size: .75em;">
+		Time Spent: <span></span>s
+	</div>
+	<div class="status_message"></div>
+</div>
 </div>
