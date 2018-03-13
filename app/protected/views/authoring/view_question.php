@@ -93,13 +93,34 @@ $('.items')
 	scroll:false,
 	stop: function( event, ui ) {
 		ord = [];
+		// $('.items > div').each(function(index){
+		// 	ord.push("reorder[" + index + "]=" + $(this).attr('id'));
+		// });
+		// $.get('/authoring/ajaxreorder?' + ord.join('&'), function(data){
+		// 	console.log(data);
+		// });
+        var reorder = {};
 		$('.items > div').each(function(index){
-			ord.push("reorder[" + index + "]=" + $(this).attr('id'));
+			// ord.push("reorder[" + index + "]=" + $(this).attr('id'));
+            reorder[index] = $(this).attr('id');
 		});
-		$.get('/authoring/ajaxreorder?' + ord.join('&'), function(data){
-			console.log(data);
-		});
-		console.log(ord.join('&'));
+        var csrf = $("input[name=YII_CSRF_TOKEN]").val();
+        $.ajax({
+            url: "/authoring/ajaxreorder",
+            method: "POST",
+            data: {
+                "reorder": reorder,
+                "YII_CSRF_TOKEN": csrf
+            },
+            success: function(data){
+                console.debug("Success:", data);
+            },
+            error: function(x, status, error){
+                console.debug("Error:", error);
+            },
+        });
+		// console.log(ord.join('&'));
+        console.debug(reorder);
 		ui.item.children( "h3" ).triggerHandler( "focusout" );
 	}
 });

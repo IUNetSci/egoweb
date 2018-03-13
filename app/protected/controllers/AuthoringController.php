@@ -1102,8 +1102,9 @@ class AuthoringController extends Controller
 	}
 
 	public function actionAjaxreorder(){
-		if(isset($_GET['reorder'])){
-			foreach($_GET['reorder'] as $order=>$questionId){
+		$post = $_POST;
+		if(isset($post['reorder'])){
+			foreach($post['reorder'] as $order=>$questionId){
 				$data = array(
 					'ordering'=>$order
 				);
