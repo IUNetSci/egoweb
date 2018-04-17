@@ -5,7 +5,7 @@ $this->pageTitle = "Interviewing";
 
 ?>
 
-<div class="view" style="width:360px;float:left;margin-right:30px">
+<div class="view" >
 <?php if(isset($_GET['studyId'])): ?>
 <script>
 $(function(){

@@ -75,7 +75,43 @@ class DataController extends Controller
 
         $interviews = Interview::model()->findAll($criteria);
         $study = Study::model()->findByPk((int)$id);
-        $questionIds = array();
+
+
+		$name = $study->name;
+		$name_len = strlen($name);
+		$middle_name = substr($name, 3, $name_len - 8);
+		$similar_criteria = new CDbCriteria;
+		$similar_criteria->addSearchCondition('name', $middle_name, "LIKE");
+		$similar_criteria->addCondition("id <> " . $study->id);
+
+		$similar_studies = Study::model()->findAll($similar_criteria);
+		$similar_ids = array();
+		foreach($similar_studies as $sim_study)
+		{
+			$similar_ids[] = $sim_study->id;
+		}
+		$similar_interview_criteria=new CDbCriteria;
+		$similar_interview_criteria->addInCondition("studyId", $similar_ids);
+		if($restrictions != "")
+		{
+			$similar_interview_criteria->addCondition($restrictions, "");
+		}
+		$similar_interview_criteria->order = "studyId";
+		
+		// array(
+		// 	'condition'=>'studyId = '.$id . $restrictions,
+		// 	'order'=>'id DESC',
+		// );
+		$similar_interviews = Interview::model()->findAll($similar_interview_criteria);
+
+		// echo "<pre>";
+		// print_r($similar_ids);
+		// print_r($similar_interviews);
+		// die();
+		// echo count($similar_interviews);
+		// die();
+
+		$questionIds = array();
         $questions = Question::model()->findAllByAttributes(array("subjectType"=>"ALTER_PAIR", "studyId"=>$id));
 		foreach($questions as $question)
 			$questionIds[] = $question->id;
@@ -93,6 +129,8 @@ class DataController extends Controller
         }
         $this->render('study', array(
             'study'=>$study,
+			'similarStudies'=>$similar_studies,
+			'similarInterviews' => $similar_interviews,
             'interviews'=>$interviews,
             'expressions'=>$expressions,
         ));

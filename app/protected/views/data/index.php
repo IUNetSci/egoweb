@@ -3,7 +3,7 @@
 $this->pageTitle = "Data Processing";
 ?>
 
-<div class="view" style="width:360px;float:left;margin-right:30px">
+<div class="view" style="">
 <h2>Studies</h2>
 <?php foreach($studies as $data): ?>
 	<?php echo CHtml::link(
