@@ -228,7 +228,7 @@ class MobileController extends Controller
         			$params->name = ':userId';
         			$params->value = Yii::app()->user->id;
         			$params->dataType = PDO::PARAM_INT;
-        
+
         			$permission = q("SELECT permissions FROM user WHERE id = :userId",array($params))->queryScalar();
         			if($permission != 11)
         				#OK FOR SQL INJECTION
@@ -244,7 +244,7 @@ class MobileController extends Controller
         		else
         			#OK FOR SQL INJECTION
         			$studies = q("SELECT id,name FROM study")->queryAll();
-        
+
         		foreach($studies as $study){
         			$json[] = array("id"=>$study['id'], "name"=>$study['name']);
         		}
@@ -260,7 +260,7 @@ class MobileController extends Controller
 
 	public function actionUploadData(){
 			header("Access-Control-Allow-Origin: *");
-		$errorMsg = "";
+        $errorMsg = "";
 		if(count($_POST)){
 			header("Access-Control-Allow-Origin: *");
 			header('Access-Control-Allow-Credentials: true');
@@ -289,7 +289,8 @@ class MobileController extends Controller
 				foreach($study->attributes as $key=>$value){
 					$study->$key = $data['study'][strtoupper($key)];
 				}
-				$study->name = $data['study']['NAME'] . " 2";
+                $tail = " - " . date('Y-m-d', strtotime($data['study']['MODIFIED'])); //13 extra characters in name eg " - 2017-01-28"
+				$study->name = $data['study']['NAME'] . $tail; //" 2";
 				$questions = array();
 				foreach($data['questions'] as $q){
 					$question = new Question;
@@ -327,6 +328,10 @@ class MobileController extends Controller
 			else
 				echo "Errors encountered!";
 		}
+        else
+        {
+            echo "Endpoint only supports POST requests";
+        }
 	}
 
 	private function compare($data){

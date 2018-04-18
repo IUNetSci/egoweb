@@ -79,7 +79,8 @@ class DataController extends Controller
 
 		$name = $study->name;
 		$name_len = strlen($name);
-		$middle_name = substr($name, 3, $name_len - 8);
+		$middle_name = substr($name, 3, $name_len - 14);
+		echo $middle_name;
 		$similar_criteria = new CDbCriteria;
 		$similar_criteria->addSearchCondition('name', $middle_name, "LIKE");
 		$similar_criteria->addCondition("id <> " . $study->id);
@@ -97,7 +98,7 @@ class DataController extends Controller
 			$similar_interview_criteria->addCondition($restrictions, "");
 		}
 		$similar_interview_criteria->order = "studyId";
-		
+
 		// array(
 		// 	'condition'=>'studyId = '.$id . $restrictions,
 		// 	'order'=>'id DESC',

@@ -131,6 +131,7 @@ Network Statistics
     echo CHtml::hiddenField('studyId', $study->id);
     echo CHtml::hiddenField('expressionId', "");
 ?>
+<b>Interviews from This Study</b>
 <table id="main-interviews" class="table table-striped table-bordered table-list">
   <thead>
     <tr>
@@ -189,7 +190,7 @@ echo "</tr>";
         </tbody>
 </table>
 
-<b>Similar Studies:</b>
+<b>Interviews from Similar Studies:</b>
 <table id="similar-interviews" class="table table-striped table-bordered table-list">
   <thead>
     <tr>
