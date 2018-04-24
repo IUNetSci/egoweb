@@ -380,6 +380,11 @@ app.factory("importStudy", function($http, $q) {
 
 app.controller('mainController', ['$scope', '$log', '$routeParams', '$sce', '$location', '$route', function($scope, $log, $routeParams, $sce, $location, $route) {
     studyList = {};
+    if(loaded)
+    {
+        $("#main_buttons").show();
+        $("#loading_indicator").hide();
+    }
     $("#questionMenu").addClass("hidden");
     $("#studyTitle").html("");
     $("#questionTitle").html("");
@@ -561,6 +566,16 @@ app.controller('studiesController', ['$scope', '$log', '$routeParams', '$sce', '
     }
 
     $scope.upload = function(studyId){
+
+        var confirmed = confirm("***  Uploading these interviews will remove them from this device.  ***");
+        if(!confirmed)
+        {
+            return false;
+        }
+
+        // $('#status').html('Uploaded');
+        // return false;
+
         $('#status').html('Uploading...');
     	$("#uploader-" + studyId).prop('disabled', true);
 
@@ -569,6 +584,42 @@ app.controller('studiesController', ['$scope', '$log', '$routeParams', '$sce', '
         if (!url.match('http') && !url.match('https')) url = "http://" + url;
     	$('#data').val(createSurveyJSON(studyId));
     	console.log($('#data').val());
+
+        $("#loadingOverlay").css({display: "block"});
+
+        var counter = 0;
+        $("#loadingOverlay .timer span").text(counter);
+        $("#loadingOverlay .status_message").text("");
+        var counter_timer = setInterval(function(){
+            counter += 1;
+            $("#loadingOverlay .timer span").text(counter);
+
+            if(counter == 10)
+            {
+                $("#loadingOverlay .status_message").text("We're still uploading.  Please continue waiting.");
+            }
+            if(counter == 30)
+            {
+                $("#loadingOverlay .status_message").text("Sorry this is taking so long.  I promise we're still working.");
+            }
+            if(counter == 60)
+            {
+                $("#loadingOverlay .status_message").text("You may be on a very slow internet connection or have a lot of data to upload. Please keep waiting.");
+            }
+            if(counter == 120)
+            {
+                $("#loadingOverlay .status_message").text("This seems to be taking a really long time.  Please keep waiting, but you may want to inform a supervisor.");
+            }
+        }, 1000);
+        //
+        // setTimeout(function(){
+        //     //for testing loading screen without actually uploading
+        // 		$('#status').html(data);
+        //         $("#loadingOverlay").css({display: "none"});
+        //         clearInterval(counter_timer);
+        //         alert("Uploaded");
+        //     }, 11000);
+
     	$.ajax({
     		type:'POST',
     		url:url,
@@ -580,11 +631,15 @@ app.controller('studiesController', ['$scope', '$log', '$routeParams', '$sce', '
     				deleteInterviews(studyId);
     				$route.reload();
     			}
-    			$('#status').html(data);
+                $('#status').html(data);
+                $("#loadingOverlay").css({display: "none"});
+                clearInterval(counter_timer);
     		},
     		error:function(xhr, ajaxOptions, thrownError){
     			$('#status').html('Error: ' + xhr.status);
     			$("#uploader-" + studyId).prop('disabled', false);
+                $("#loadingOverlay").css({display: "none"});
+                clearInterval(counter_timer);
     		}
     	});
 	}
@@ -688,7 +743,7 @@ document.addEventListener("deviceready", onDeviceReady, false);
 
 function onDeviceReady() {
 }
-
+var loaded = false;
 $(function(){
 
     db.onready(function(){
@@ -749,6 +804,7 @@ $(function(){
             console.log("Loaded...");
             $("#main_buttons").show();
             $("#loading_indicator").hide();
+            loaded = true;
     	}, 500);
 
     });
