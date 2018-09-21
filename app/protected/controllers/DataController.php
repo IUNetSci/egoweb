@@ -387,9 +387,56 @@ class DataController extends Controller
 			'order'=>'id DESC',
 		);
 
-        $studies = Study::model()->findAll($condition);
+		$studies = Study::model()->findAll($condition);
+		
+
+
+		$egoIdQ = q("SELECT * from question where useAlterListField in ('name','email','id')")->queryRow();
+		$restrictions = "";
+		if($egoIdQ){
+			$participants = q("SELECT " . $egoIdQ['useAlterListField'] . " FROM alterList where interviewerId = " . Yii::app()->user->id)->queryColumn();
+			foreach($participants as &$p){
+    			if(strlen($p) >= 8)
+    			    $p = decrypt($p);
+			}
+			if($participants){
+        		$criteria = array(
+        			'condition'=>"questionId = " .$egoIdQ['id'],
+        		);
+                $answers = Answer::model()->findAll($criteria);
+                foreach($answers as $answer){
+                    if(in_array($answer->value, $participants))
+                        $interviewIds[] = $answer->interviewId;
+                }
+				if($interviewIds)
+					$restrictions = ' id in (' . implode(",", $interviewIds) . ')';
+				else
+					$restrictions = ' id = -1';
+			}
+		}
+        if(Yii::app()->user->isSuperAdmin)
+            $restrictions = "";
+		$criteria=array(
+			'condition'=> $restrictions,
+			'order'=>'id DESC',
+		);
+
+        $interviews = Interview::model()->findAll($criteria);
+
+		$ego_surveys = array();
+
+		foreach($interviews as $interview) {
+			$ego_surveys[] = array(
+				egoId => Interview::getEgoId($interview->id),
+				studyId => $interview->studyId
+			);
+		}
+
+		usort($ego_surveys, function($a, $b) { return ($a["egoId"] < $b["egoId"]) ? -1 : 1; });
+
 
 		$this->render('index', array(
+			'interviews'=>$ego_surveys,
 			'studies'=>$studies,
 		));
 	}
