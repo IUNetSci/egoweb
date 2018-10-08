@@ -15,21 +15,23 @@ function changeEQ(questionId){
 				else
 					$question = new Question;
 $criteria=new CDbCriteria;
-$multi = q("SELECT multiSessionEgoId FROM study WHERE id = " . $studyId)->queryScalar();
-if($multi){
-    #OK FOR SQL INJECTION
-	$multiIds = q("SELECT id FROM question WHERE title = (SELECT title FROM question WHERE id = " .$multi . ")")->queryColumn();
-    #OK FOR SQL INJECTION
-    $studyIds = q("SELECT id FROM study WHERE multiSessionEgoId in (" . implode(",", $multiIds) . ")")->queryColumn();
-	$criteria=array(
-		'condition'=>"studyId in (" . implode(",", $studyIds) . ")",
-	);
-} else {
+
+//Removed because Multi Session ID is not necessary for VidaSana - BS 10/8/18
+// $multi = q("SELECT multiSessionEgoId FROM study WHERE id = " . $studyId)->queryScalar();
+// if($multi){
+//     #OK FOR SQL INJECTION
+// 	$multiIds = q("SELECT id FROM question WHERE title = (SELECT title FROM question WHERE id = " .$multi . ")")->queryColumn();
+//     #OK FOR SQL INJECTION
+//     $studyIds = q("SELECT id FROM study WHERE multiSessionEgoId in (" . implode(",", $multiIds) . ")")->queryColumn();
+// 	$criteria=array(
+// 		'condition'=>"studyId in (" . implode(",", $studyIds) . ")",
+// 	);
+// } else {
 	$criteria=array(
 		'condition'=>"studyId = " . $studyId,
 		'order'=>'FIELD(subjectType, "EGO_ID", "EGO","ALTER", "ALTER_PAIR", "NETWORK"), ordering',
 	);
-}
+// }
 $questions = Question::model()->findAll($criteria);
 $qList = array();
 foreach($questions as $q){
