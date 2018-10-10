@@ -428,7 +428,8 @@ class DataController extends Controller
 		foreach($interviews as $interview) {
 			$ego_surveys[] = array(
 				egoId => Interview::getEgoId($interview->id),
-				studyId => $interview->studyId
+				studyId => $interview->studyId,
+				complete_date => $interview->complete_date
 			);
 		}
 
