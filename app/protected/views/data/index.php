@@ -21,6 +21,7 @@ $this->pageTitle = "Data Processing";
 		<tr>
 			<th>Ego ID</th>
 			<th>Study</th>
+			<th>Date Completed</th>
 		</tr>
 		
 	<?php foreach($interviews as $interview) { ?>
@@ -30,11 +31,12 @@ $this->pageTitle = "Data Processing";
 		<tr>
 			<td><?php echo $interview['egoId'] ?></td>
 			<td>
-			<?php echo CHtml::link(
-				CHtml::encode(Study::getName($interview['studyId'])),
-				Yii::app()->createUrl('data/study/'.$interview['studyId'])
+				<?php echo CHtml::link(
+					CHtml::encode(Study::getName($interview['studyId'])),
+					Yii::app()->createUrl('data/study/'.$interview['studyId'])
 				); ?>
 			</td>
+			<td><?php echo $interview['complete_date']?date("Y-m-d h:i:s", $interview['complete_date']):"not completed" ?></td>
 		</tr>
 	<?php } ?>
 	</table>
