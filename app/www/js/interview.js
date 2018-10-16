@@ -1565,139 +1565,155 @@ function buildQuestions(pageNumber, interviewId){
 
 function evalExpression(id, alterId1, alterId2)
 {
-	var array_id;
-    if(!id || id == 0)
-        return true;
-    if(typeof expressions[id] == "undefined")
-        return true;
+	try {
+		var array_id;
+		if(!id || id == 0)
+			return true;
+		if(typeof expressions[id] == "undefined")
+			return true;
 
-    questionId = expressions[id].QUESTIONID;
-    subjectType = "";
-    if(questionId && questions[questionId])
-        subjectType = questions[questionId].SUBJECTTYPE;
+		questionId = expressions[id].QUESTIONID;
+		subjectType = "";
+		if(questionId && questions[questionId])
+			subjectType = questions[questionId].SUBJECTTYPE;
 
-    comparers = {
-    	'Greater':'>',
-    	'GreaterOrEqual':'>=',
-    	'Equals':'==',
-    	'LessOrEqual':'<=',
-    	'Less':'<'
-    };
+		comparers = {
+			'Greater':'>',
+			'GreaterOrEqual':'>=',
+			'Equals':'==',
+			'LessOrEqual':'<=',
+			'Less':'<'
+		};
 
-    if(questionId)
-    	array_id = questionId;
-    if(typeof alterId1 != 'undefined' && subjectType == 'ALTER')
-    	array_id += "-" + alterId1;
-    else if(typeof alterId2 != 'undefined' && subjectType == 'ALTER_PAIR')
-    	array_id += "-" + alterId1 + 'and' + alterId2;
+		if(questionId)
+			array_id = questionId;
+		if(typeof alterId1 != 'undefined' && subjectType == 'ALTER')
+			array_id += "-" + alterId1;
+		else if(typeof alterId2 != 'undefined' && subjectType == 'ALTER_PAIR')
+			array_id += "-" + alterId1 + 'and' + alterId2;
 
-    if(typeof answers[array_id] != "undefined")
-		answer = answers[array_id].VALUE;
-    else
-    	answer = "";
+		if(typeof answers[array_id] != "undefined")
+			answer = answers[array_id].VALUE;
+		else
+			answer = "";
 
-    if(expressions[id].TYPE == "Text"){
-    	if(!answer)
-    		return expressions[id].RESULTFORUNANSWERED;
-    	if(expressions[id].OPERATOR == "Contains"){
-    		if(answer.indexOf(expressions[id].VALUE) != -1){
-                console.log(expressions[id].NAME + ":true");
-    			return true;
-            }
-    	}else if(expressions[id].OPERATOR == "Equals"){
-    		if(answer == expressions[id].VALUE){
-                console.log(expressions[id].NAME + ":true");
-    			return true;
-            }
-    	}
-    }
-    if(expressions[id].TYPE == "Number"){
-    	if(!answer)
-    		return expressions[id].RESULTFORUNANSWERED;
-    	logic = answer + " " + comparers[expressions[id].OPERATOR] + " " + expressions[id].VALUE;
-    	result = eval(logic);
-        console.log(expressions[id].NAME + ":" + result);
-    	return result;
-    }
-    if(expressions[id].TYPE == "Selection"){
-    	if(!answer)
-    		return expressions[id].RESULTFORUNANSWERED;
-    	selectedOptions = answer.split(',');
-    	var options = expressions[id].VALUE.split(',');
-    	trues = 0;
-    	for (var k in selectedOptions) {
-    		if(expressions[id].OPERATOR == "Some" && options.indexOf(selectedOptions[k]) != -1){
-                console.log(expressions[id].NAME + ":true");
-    			return true;
-            }
-    		if(expressions[id].OPERATOR == "None" && options.indexOf(selectedOptions[k]) != -1){
-                console.log(expressions[id].NAME + ":false");
-    			return false;
-            }
-    		if(options.indexOf(selectedOptions[k]) != -1)
-    			trues++;
-    	}
-    	if(expressions[id].OPERATOR == "None" || (expressions[id].OPERATOR == "All" && trues >= options.length)){
-            console.log(expressions[id].NAME + ":true");
-    		return true;
-        }
-    }
-    if(expressions[id].TYPE == "Counting"){
-    	countingSplit = expressions[id].VALUE.split(':');
-		var times = parseInt(countingSplit[0]);
-		var expressionIds = countingSplit[1];
-		var questionIds = countingSplit[2];
+		if(expressions[id].TYPE == "Text"){
+			if(!answer)
+				return expressions[id].RESULTFORUNANSWERED;
+			if(expressions[id].OPERATOR == "Contains"){
+				if(answer.indexOf(expressions[id].VALUE) != -1){
+					console.log(expressions[id].NAME + ":true");
+					return true;
+				}
+			}else if(expressions[id].OPERATOR == "Equals"){
+				if(answer == expressions[id].VALUE){
+					console.log(expressions[id].NAME + ":true");
+					return true;
+				}
+			}
+		}
+		if(expressions[id].TYPE == "Number"){
+			if(!answer)
+				return expressions[id].RESULTFORUNANSWERED;
+			logic = answer + " " + comparers[expressions[id].OPERATOR] + " " + expressions[id].VALUE;
+			result = eval(logic);
+			console.log(expressions[id].NAME + ":" + result);
+			return result;
+		}
+		if(expressions[id].TYPE == "Selection"){
+			if(!answer)
+				return expressions[id].RESULTFORUNANSWERED;
+			selectedOptions = answer.split(',');
+			var options = expressions[id].VALUE.split(',');
+			trues = 0;
+			for (var k in selectedOptions) {
+				if(expressions[id].OPERATOR == "Some" && options.indexOf(selectedOptions[k]) != -1){
+					console.log(expressions[id].NAME + ":true");
+					return true;
+				}
+				if(expressions[id].OPERATOR == "None" && options.indexOf(selectedOptions[k]) != -1){
+					console.log(expressions[id].NAME + ":false");
+					return false;
+				}
+				if(options.indexOf(selectedOptions[k]) != -1)
+					trues++;
+			}
+			if(expressions[id].OPERATOR == "None" || (expressions[id].OPERATOR == "All" && trues >= options.length)){
+				console.log(expressions[id].NAME + ":true");
+				return true;
+			}
+		}
+		if(expressions[id].TYPE == "Counting"){
+			countingSplit = expressions[id].VALUE.split(':');
+			var times = parseInt(countingSplit[0]);
+			var expressionIds = countingSplit[1];
+			var questionIds = countingSplit[2];
 
-    	var count = 0;
-    	if(expressionIds != ""){
-    		expressionIds = expressionIds.split(',');
-    		for (var k in expressionIds) {
-    			count = count + evalExpression(expressionIds[k], alterId1, alterId2);
-    		}
-    	}
-    	if(questionIds != ""){
-    		questionIds = questionIds.split(',');
-    		for (var k in questionIds) {
-    			count = count + countQuestion(questionIds[k], expressions[id].OPERATOR);
-    		}
-    	}
-        console.log(expressions[id].NAME + ":" + (times * count));
-    	return (times * count);
-    }
-    if(expressions[id].TYPE == "Comparison"){
-    	compSplit =  expressions[id].VALUE.split(':');
-    	value = parseInt(compSplit[0]);
-    	expressionId = parseInt(compSplit[1]);
-    	result = evalExpression(expressionId, alterId1, alterId2);
-    	logic = result + " " + comparers[expressions[id].OPERATOR] + " " + value;
-    	result = eval(logic);
-        console.log(expressions[id].NAME + ":" + result);
-    	return result;
-    }
-    if(expressions[id].TYPE == "Compound"){
-    	var subexpressions = expressions[id].VALUE.split(',');
-    	var trues = 0;
-    	for (var k in subexpressions) {
-    		// prevent infinite loops!
-    		if(parseInt(subexpressions[k]) == id)
-    			continue;
-    		var isTrue = evalExpression(parseInt(subexpressions[k]), alterId1, alterId2);
-    		if(expressions[id].OPERATOR == "Some" && isTrue == true){
-            	console.log(expressions[id].NAME + ":true");
-    			return true;
-    		}
-    		if(isTrue == true)
-    			trues++;
-    		console.log(expressions[id].NAME +":subexpression:"+ k +":" + isTrue);
-    	}
-    	if(expressions[id].OPERATOR == "None" && trues == 0){
-        	console.log(expressions[id].NAME + ":true");
-    		return true;
-    	}else if (expressions[id].OPERATOR == "All" && trues == subexpressions.length){
-        	console.log(expressions[id].NAME + ":true");
-    		return true;
-        }
-    }
+			var count = 0;
+			if(expressionIds != ""){
+				expressionIds = expressionIds.split(',');
+				for (var k in expressionIds) {
+					count = count + evalExpression(expressionIds[k], alterId1, alterId2);
+				}
+			}
+			if(questionIds != ""){
+				questionIds = questionIds.split(',');
+				for (var k in questionIds) {
+					count = count + countQuestion(questionIds[k], expressions[id].OPERATOR);
+				}
+			}
+			console.log(expressions[id].NAME + ":" + (times * count));
+			return (times * count);
+		}
+		if(expressions[id].TYPE == "Comparison"){
+			compSplit =  expressions[id].VALUE.split(':');
+			value = parseInt(compSplit[0]);
+			expressionId = parseInt(compSplit[1]);
+			result = evalExpression(expressionId, alterId1, alterId2);
+			logic = result + " " + comparers[expressions[id].OPERATOR] + " " + value;
+			result = eval(logic);
+			console.log(expressions[id].NAME + ":" + result);
+			return result;
+		}
+		if(expressions[id].TYPE == "Compound"){
+			var subexpressions = expressions[id].VALUE.split(',');
+			var trues = 0;
+			for (var k in subexpressions) {
+				// prevent infinite loops!
+				if(parseInt(subexpressions[k]) == id)
+					continue;
+				var isTrue = evalExpression(parseInt(subexpressions[k]), alterId1, alterId2);
+				if(expressions[id].OPERATOR == "Some" && isTrue == true){
+					console.log(expressions[id].NAME + ":true");
+					return true;
+				}
+				if(isTrue == true)
+					trues++;
+				console.log(expressions[id].NAME +":subexpression:"+ k +":" + isTrue);
+			}
+			if(expressions[id].OPERATOR == "None" && trues == 0){
+				console.log(expressions[id].NAME + ":true");
+				return true;
+			}else if (expressions[id].OPERATOR == "All" && trues == subexpressions.length){
+				console.log(expressions[id].NAME + ":true");
+				return true;
+			}
+		}
+	}
+	catch (err)
+	{
+		
+		console.log("Expression FAILED: " + err);
+		if(expressions && expressions[id] && expressions[id].NAME)
+		{
+			console.log("Failed Expression: " + expressions[id].NAME);
+		}
+		if(logic)
+		{
+			console.log("Failed Logic: " + logic);
+		}
+
+	}
     console.log(expressions[id].NAME + ":false");
     return false;
 
