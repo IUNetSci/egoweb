@@ -418,7 +418,8 @@ class DataController extends Controller
             $restrictions = "";
 		$criteria=array(
 			'condition'=> $restrictions,
-			'order'=>'id DESC',
+			// 'order'=>'id DESC',
+			// 'order'=>'complete_date ASC',
 		);
 
         $interviews = Interview::model()->findAll($criteria);
@@ -433,7 +434,11 @@ class DataController extends Controller
 			);
 		}
 
-		usort($ego_surveys, function($a, $b) { return ($a["egoId"] < $b["egoId"]) ? -1 : 1; });
+		// die($_GET["sort"]);
+		
+		// die($sort_method);
+		usort($ego_surveys, function($a, $b) { $sort_method = isset($_GET["sort"])?$_GET["sort"]:"complete_date"; return ($a[$sort_method] > $b[$sort_method]) ? -1 : 1; });
+		// usort($ego_surveys, function($a, $b) { return ($a["egoId"] < $b["egoId"]) ? -1 : 1; });
 
 
 		$this->render('index', array(
