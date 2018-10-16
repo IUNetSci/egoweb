@@ -19,7 +19,7 @@ $this->pageTitle = "Data Processing";
 	<h2>Interviews</h2>
 	<table class="table">
 		<tr>
-			<th><a href="/data?sort=id">Ego ID</a></th>
+			<th><a href="/data?sort=egoId">Ego ID</a></th>
 			<th><a href="/data?sort=studyId">Study</a></th>
 			<th><a href="/data?sort=complete_date">Date Completed</a></th>
 		</tr>
