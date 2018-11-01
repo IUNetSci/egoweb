@@ -725,7 +725,8 @@ class Interview extends CActiveRecord
             $ego_id_string = array();
             $study = Study::model()->findByPk($this->studyId);
             $optionsRaw = q("SELECT * FROM questionOption WHERE studyId = " . $study->id)->queryAll();
-
+            
+            $answers[] = $study->name;
 
             // create an array with option ID as key
             $options = array();
@@ -735,6 +736,10 @@ class Interview extends CActiveRecord
                 $options[$option['id']] = $option['value'];
                 $optionLabels[$option['id']] = $option['name'];
             }
+
+            // print_r($optionLabels);
+            // die();
+
             foreach ($ego_id_questions as $question)
             {
 
@@ -789,19 +794,30 @@ class Interview extends CActiveRecord
                     if ($question['answerType'] == "SELECTION")
                     {
                         if (isset($options[$answer->value]))
+                        {    
                             $answers[] = $options[$answer->value];
+                            $answers[] = $optionLabels[$answer->value];
+                        }
                         else
+                        {    
                             $answers[] = "";
+                            $answers[] = "";
+                        }
                     } else if ($question['answerType'] == "MULTIPLE_SELECTION")
                     {
                         $optionIds = explode(',', $answer->value);
                         $list = array();
+                        $list2 = array();
                         foreach ($optionIds as $optionId)
                         {
                             if (isset($options[$optionId]))
+                            {
                                 $list[] = $options[$optionId];
+                                $list2[] = $optionLabels[$optionId];
+                            }
                         }
                         $answers[] = implode('; ', $list);
+                        $answers[] = implode('; ', $list2);
                     } else if ($question['answerType'] == "TIME_SPAN")
                     {
                         if(!strstr($answer->value, ";")){
@@ -827,13 +843,29 @@ class Interview extends CActiveRecord
                     }
                 } else if ($answer->skipReason == "DONT_KNOW"){
                         $answers[] = $study->valueDontKnow;
+                        if($question['answerType'] == "MULTIPLE_SELECTION" || $question['answerType'] == "SELECTION")
+                        {
+                            $answers[] = "Don't Know";
+                        }
                 } else if ($answer->skipReason == "REFUSE"){
                         $answers[] = $study->valueRefusal;
+                        if($question['answerType'] == "MULTIPLE_SELECTION" || $question['answerType'] == "SELECTION")
+                        {
+                            $answers[] = "Refuse";
+                        }
                 } else if($answer->value == $study->valueLogicalSkip)
                 {
                     $answers[] = $study->valueLogicalSkip;
+                    if($question['answerType'] == "MULTIPLE_SELECTION" || $question['answerType'] == "SELECTION")
+                    {
+                        $answers[] = "Logical Skip";
+                    }
                 } else {
                     $answers[] = "";
+                    if($question['answerType'] == "MULTIPLE_SELECTION" || $question['answerType'] == "SELECTION")
+                    {
+                        $answers[] = "";
+                    }
                 }
             }
 
@@ -849,19 +881,30 @@ class Interview extends CActiveRecord
                     if ($question->answerType == "SELECTION")
                     {
                         if (isset($options[$answer]))
-                            $answers[] = $options[$answer];
+                        {     
+                            $answers[] = $options[$answer]; 
+                            $answers[] = $optionLabels[$answer]; 
+                        }
                         else
+                        {    
+                            $answers[] = ""; 
                             $answers[] = "";
+                        }
                     } else if ($question->answerType == "MULTIPLE_SELECTION")
                     {
                         $optionIds = explode(',', $answer->value);
                         $list = array();
+                        $list2 = array();
                         foreach ($optionIds as $optionId)
                         {
                             if (isset($options[$optionId]))
+                            {
                                 $list[] = $options[$optionId];
+                                $list2[] = $optionLabels[$optionId]; 
+                            }
                         }
                         $answers[] = implode('; ', $list);
+                        $answers[] = implode('; ', $list2);
                     } else
                     {
                         $answers[] = $answer->value;
@@ -869,14 +912,30 @@ class Interview extends CActiveRecord
                 } else if ($answer->skipReason == "DONT_KNOW")
                 {
                     $answers[] = $study->valueDontKnow;
+                    if($question['answerType'] == "MULTIPLE_SELECTION" || $question['answerType'] == "SELECTION")
+                    {
+                        $answers[] = "Don't Know";
+                    }
                 } else if ($answer->skipReason == "REFUSE")
                 {
                     $answers[] = $study->valueRefusal;
+                    if($question['answerType'] == "MULTIPLE_SELECTION" || $question['answerType'] == "SELECTION")
+                    {
+                        $answers[] = "Refuse";
+                    }
                 }  else if($answer->value == $study->valueLogicalSkip)
                 {
                     $answers[] = $study->valueLogicalSkip;
+                    if($question['answerType'] == "MULTIPLE_SELECTION" || $question['answerType'] == "SELECTION")
+                    {
+                        $answers[] = "Logical Skip";
+                    }
                 } else {
                     $answers[] = "";
+                    if($question['answerType'] == "MULTIPLE_SELECTION" || $question['answerType'] == "SELECTION")
+                    {
+                        $answers[] = "";
+                    }
                 }
             }
 
@@ -927,32 +986,59 @@ class Interview extends CActiveRecord
                         if ($question['answerType'] == "SELECTION")
                         {
                             $answers[] = $options[$answer->value];
+                            $answers[] = $optionLabels[$answer->value];
                         } else if ($question['answerType'] == "MULTIPLE_SELECTION")
                         {
                             $optionIds = explode(',', $answer->value);
                             $list = array();
+                            $list2 = array();
                             foreach ($optionIds as $optionId)
                             {
                                 if (isset($options[$optionId]))
+                                {
                                     $list[] = $options[$optionId];
+                                    $list2[] = $optionLabels[$optionId];
+                                }
                             }
                             if (count($list) == 0)
+                            {    
                                 $answers[] = $study->valueNotYetAnswered;
+                                $answers[] = $study->valueNotYetAnswered;
+                            }
                             else
+                            {    
                                 $answers[] = implode('; ', $list);
+                                $answers[] = implode('; ', $list2);
+                            }
                         } else
                         {
                             $answers[] = $answer->value;
                         }
                     } else if ($answer->skipReason == "DONT_KNOW"){
                             $answers[] = $study->valueDontKnow;
+                            if($question['answerType'] == "MULTIPLE_SELECTION" || $question['answerType'] == "SELECTION")
+                            {
+                                $answers[] = "Don't Know";
+                            }
                     } else if ($answer->skipReason == "REFUSE"){
                             $answers[] = $study->valueRefusal;
+                            if($question['answerType'] == "MULTIPLE_SELECTION" || $question['answerType'] == "SELECTION")
+                            {
+                                $answers[] = "Refuse";
+                            }
                     } else if($answer->value == $study->valueLogicalSkip)
                     {
                         $answers[] = $study->valueLogicalSkip;
+                        if($question['answerType'] == "MULTIPLE_SELECTION" || $question['answerType'] == "SELECTION")
+                        {
+                            $answers[] = "Logical Skip";
+                        }
                     } else {
                         $answers[] = "";
+                        if($question['answerType'] == "MULTIPLE_SELECTION" || $question['answerType'] == "SELECTION")
+                        {
+                            $answers[] = "";
+                        }
                     }
                 }
             }else{

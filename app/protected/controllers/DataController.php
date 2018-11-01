@@ -483,17 +483,33 @@ class DataController extends Controller
 
 		$headers = array();
 		$headers[] = 'Interview ID';
+		$headers[] = 'Study Name';
 		$headers[] = "EgoID";
 		$headers[] = 'Start Time';
 		$headers[] = 'End Time';
 		foreach ($ego_id_questions as $question){
 			$headers[] = $question['title'];
+			if($question['answerType'] == "SELECTION" || $question['answerType'] == "MULTIPLE_SELECTION")
+			{
+				$headers[] = $question['title'] . " - Name";
+			
+			}
 		}
 		foreach ($ego_questions as $question){
 			$headers[] = $question['title'];
+			if($question['answerType'] == "SELECTION" || $question['answerType'] == "MULTIPLE_SELECTION")
+			{
+				$headers[] = $question['title'] . " - Name";
+			
+			}
 		}
 		foreach ($network_questions as $question){
 			$headers[] = $question->title;
+			if($question['answerType'] == "SELECTION" || $question['answerType'] == "MULTIPLE_SELECTION")
+			{
+				$headers[] = $question['title'] . " - Name";
+			
+			}
 		}
 		if($expressionId){
 			$headers[] = "Density";
@@ -515,6 +531,11 @@ class DataController extends Controller
 
 		foreach ($alter_questions as $question){
 			$headers[] = $question['title'];
+			if($question['answerType'] == "SELECTION" || $question['answerType'] == "MULTIPLE_SELECTION")
+			{
+				$headers[] = $question['title'] . " - Name";
+			
+			}
 		}
 
 		if($expressionId){
