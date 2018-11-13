@@ -553,11 +553,41 @@ class DataController extends Controller
 		header("Content-Type: application/octet-stream");
 		header("Content-Disposition: attachment; filename=".seoString($study->name)."-ego-alter-data".".csv");
 		header("Content-Type: application/force-download");
-		echo implode(',', $headers) . "\n";
+		// echo implode(',', $headers) . "\n";
+		$last_study_id = "";
+		$last_header_row = "";
 		foreach ($interviewIds as $interviewId){
     		$filePath = getcwd() . "/assets/" . $_POST['studyId'] . "/". $interviewId . "-ego-alter.csv";
     		  if (file_exists($filePath)) {
-                echo file_get_contents($filePath);
+				// $content = file_get_contents($filePath);
+				//each interview file will consist of alters.  Each alter row will have its own header row right above it.
+				//  So, data is on even lines (2, 4, 6, etc), headers are on odd lines(1, 3, 5, etc)
+				$content = file($filePath);
+
+				//for each line in the file
+				for($k = 0; $k < count($content); $k ++)
+				{
+					$output = $content[$k];
+					//if it's an odd row... the index will be even...
+					if($k % 2 == 0)
+					{
+						//it's a header row. 
+						//if the last header row and this header row are different,
+						// output the content.  That way, it will only show a header row  
+						// once per study.  No duplicate header rows
+						if($output != $last_header_row)
+						{
+							$last_header_row = $output;
+							echo $output;
+						}
+					}
+					else
+					{
+						//not a header row, just output the content.
+						echo $output;
+					}
+				}
+
                 unlink($filePath);
             }
 		}
