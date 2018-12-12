@@ -809,7 +809,14 @@ class Interview extends CActiveRecord
             foreach ($ego_questions as $question)
             {
                 $answer = Answer::model()->findByAttributes(array("interviewId"=>$this->id, "questionId"=>$question['id']));
-                $header = $question["title"];
+                // $header = $question["title"];
+                $i = 0;
+                $header = $question['title'];
+                while(in_array($header, $headers))
+                {
+                    $header = $i . "-" . $question['title'];
+                    $i ++;
+                }
                 if(!$answer){
                     $answers[] = $study->valueNotYetAnswered;
                     $headers[] = $header;
@@ -917,7 +924,15 @@ class Interview extends CActiveRecord
             foreach ($network_questions as $question)
             {
                 $answer = Answer::model()->findByAttributes(array("interviewId"=>$this->id, "questionId"=>$question->id));
+                
+                $i = 0;
                 $header = $question->title;
+                while(in_array($header, $headers))
+                {
+                    $header = $i . "-" . $question->title;
+                    $i ++;
+                }
+
                 if(!$answer){
                     $answers[] = $study->valueNotYetAnswered;
                     $headers[] = $header;
@@ -1055,7 +1070,14 @@ class Interview extends CActiveRecord
                 foreach ($alter_questions as $question)
                 {
                     $answer = Answer::model()->findByAttributes(array("interviewId"=>$this->id, "questionId"=>$question['id'], "alterId1"=>$alter->id));
+                    // $header = $question['title'];
+                    $i = 0;
                     $header = $question['title'];
+                    while(in_array($header, $headers))
+                    {
+                        $header = $i . "-" . $question['title'];
+                        $i ++;
+                    }
                     if(!$answer){
                         $answers[] = $study->valueNotYetAnswered;
                         $headers [] = $header;
