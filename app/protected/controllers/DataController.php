@@ -556,6 +556,7 @@ class DataController extends Controller
 		// echo implode(',', $headers) . "\n";
 		$last_study_id = "";
 		$last_header_row = "";
+		$last_row = "";
 		foreach ($interviewIds as $interviewId){
     		$filePath = getcwd() . "/assets/" . $_POST['studyId'] . "/". $interviewId . "-ego-alter.csv";
     		  if (file_exists($filePath)) {
@@ -569,7 +570,9 @@ class DataController extends Controller
 				{
 					$output = $content[$k];
 					//if it's an odd row... the index will be even...
-					if($k % 2 == 0)
+					$id = explode(",", $output, 2)[0];
+					// die($id);
+					if($id == '"Study ID"')
 					{
 						//it's a header row. 
 						//if the last header row and this header row are different,
@@ -583,9 +586,17 @@ class DataController extends Controller
 					}
 					else
 					{
-						//not a header row, just output the content.
+						//if the ID changed and the last row was not a header row
+						if($id != $last_study_id  && $last_row != $last_header_row)
+						{
+							//output the header row;
+							echo $last_header_row;
+							$last_study_id = $id;
+						}
 						echo $output;
 					}
+
+					$last_row = $output;
 				}
 
                 unlink($filePath);
