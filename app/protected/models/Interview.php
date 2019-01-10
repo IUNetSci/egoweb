@@ -820,6 +820,12 @@ class Interview extends CActiveRecord
                 if(!$answer){
                     $answers[] = $study->valueNotYetAnswered;
                     $headers[] = $header;
+                    if ($question['answerType'] == "SELECTION" || $question['answerType'] == "MULTIPLE_SELECTION")
+                    {
+                        $answers[] = "Not Yet Answered";
+                        $headers[] = $header . " - Name";
+                            
+                    }
                     continue;
                 }
 
@@ -936,6 +942,12 @@ class Interview extends CActiveRecord
                 if(!$answer){
                     $answers[] = $study->valueNotYetAnswered;
                     $headers[] = $header;
+                    if ($question['answerType'] == "SELECTION" || $question['answerType'] == "MULTIPLE_SELECTION")
+                    {
+                        $answers[] = "Not Yet Answered";
+                        $headers[] = $header . " - Name";
+                            
+                    }
                     continue;
                 }
                 if ($answer->value !== "" && $answer->skipReason == "NONE" && $answer->value != $study->valueLogicalSkip)
@@ -1081,6 +1093,12 @@ class Interview extends CActiveRecord
                     if(!$answer){
                         $answers[] = $study->valueNotYetAnswered;
                         $headers [] = $header;
+                        if ($question['answerType'] == "SELECTION" || $question['answerType'] == "MULTIPLE_SELECTION")
+                    {
+                        $answers[] = "Not Yet Answered";
+                        $headers[] = $header . " - Name";
+                            
+                    }
                         continue;
                     }
                     if ($answer->value != "" && $answer->skipReason == "NONE" && $answer->value != $study->valueLogicalSkip)
@@ -1107,7 +1125,7 @@ class Interview extends CActiveRecord
                             if (count($list) == 0)
                             {    
                                 $answers[] = $study->valueNotYetAnswered;
-                                $answers[] = $study->valueNotYetAnswered;
+                                $answers[] = "Not Yet Answered"; //$study->valueNotYetAnswered;
                                 $headers[] = $header;
                                 $headers[] = $header . " - Name";
                             }
@@ -1161,12 +1179,19 @@ class Interview extends CActiveRecord
             }else{
                 $answers[] = 0;
                 $answers[] = "";
-                $headers[] = "";
+                $headers[] = "Dyad Match ID";
                 $headers[] = "";
                 foreach ($alter_questions as $question)
                 {
                     $answers[] = $study->valueNotYetAnswered;
                     $headers[] = $question["title"];
+
+                    if ($question['answerType'] == "SELECTION" || $question['answerType'] == "MULTIPLE_SELECTION")
+                    {
+                        $answers[] = "Not Yet Answered";
+                        $headers[] = $question["title"] . " - Name";
+                            
+                    }
                 }
             }
 

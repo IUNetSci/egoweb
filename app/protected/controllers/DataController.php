@@ -587,7 +587,7 @@ class DataController extends Controller
 					else
 					{
 						//if the ID changed and the last row was not a header row
-						if($id != $last_study_id  && $last_row != $last_header_row)
+						if($id != $last_study_id  ) //&& $last_row != $last_header_row)
 						{
 							//output the header row;
 							echo $last_header_row;
