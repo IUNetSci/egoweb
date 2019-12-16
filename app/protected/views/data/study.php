@@ -147,7 +147,11 @@ Network Statistics
     </tr>
   </thead>
   <tbody>
-
+    <style>
+        input[value="Edit"] {
+            display: none;
+        }
+    </style>
 <?php
 
 foreach($interviews as $interview){
