@@ -565,7 +565,7 @@ app.controller('studiesController', ['$scope', '$log', '$routeParams', '$sce', '
         document.location = url + "/page/" + parseInt(page);
     }
 
-    $scope.upload = function(studyId){
+    $scope.upload = function(studyId, uploadIncomplete){
 
         var confirmed = confirm("***  Uploading these interviews will remove them from this device.  ***");
         if(!confirmed)
@@ -582,7 +582,7 @@ app.controller('studiesController', ['$scope', '$log', '$routeParams', '$sce', '
     	var serverAddress = db.queryValue("SELECT address FROM serverstudy WHERE id = " + studyId);
     	var url = serverAddress + "/mobile/uploadData";
         if (!url.match('http') && !url.match('https')) url = "http://" + url;
-    	$('#data').val(createSurveyJSON(studyId));
+    	$('#data').val(createSurveyJSON(studyId,uploadIncomplete));
     	console.log($('#data').val());
 
         $("#loadingOverlay").css({display: "block"});
@@ -628,7 +628,7 @@ app.controller('studiesController', ['$scope', '$log', '$routeParams', '$sce', '
     		success:function(data){
     			if(data.match("Upload completed.  No Errors Found")){
     				justUploaded.push(studyId);
-    				deleteInterviews(studyId);
+    				deleteInterviews(studyId,false, uploadIncomplete);
     				$route.reload();
     			}
                 $('#status').html(data);
@@ -1108,7 +1108,7 @@ function objToArray(obj){
 
 justUploaded = [];
 
-function createSurveyJSON(studyId){
+function createSurveyJSON(studyId, incomplete){
 	data = new Object;
 	serverStudyId = db.queryValue("SELECT serverstudyid FROM serverstudy WHERE id = " + studyId);
 	data['study'] = db.queryRowObject("SELECT * FROM study WHERE id = " + studyId);
@@ -1132,7 +1132,16 @@ function createSurveyJSON(studyId){
 		console.log(data['expressions']);
 		data['alters'] = [];
 		data['answers'] = [];
-		var interviews = db.queryObjects("SELECT * FROM interview WHERE completed = -1 AND studyId = " + studyId).data;
+        // var interviews = db.queryObjects("SELECT * FROM interview WHERE studyId = " + studyId).data;
+        if(incomplete)
+        {
+            var interviews = db.queryObjects("SELECT * FROM interview WHERE completed <> -1 AND studyId = " + studyId).data;
+        }
+        else
+        {
+            var interviews = db.queryObjects("SELECT * FROM interview WHERE completed = -1 AND studyId = " + studyId).data;
+        }
+		// var interviews = db.queryObjects("SELECT * FROM interview WHERE completed = -1 AND studyId = " + studyId).data;
 		console.log(interviews);
 		for(k in interviews){
 			var alters = db.queryObjects("SELECT * FROM alters WHERE interviewId = " + interviews[k].ID).data;
@@ -1154,11 +1163,14 @@ function createSurveyJSON(studyId){
 	return JSON.stringify(data);
 }
 
-function deleteInterviews(id, all){
+function deleteInterviews(id, all, incomplete){
 	if(typeof all != "undefined")
 		all = "";
-	else
-		all = "completed = -1 AND";
+	else if (incomplete)
+        all = "completed <> -1 AND";
+    else
+        all = "completed = -1 AND";
+        
 	var interviews = db.query("SELECT * FROM interview WHERE " + all + " studyId = " + id).data;
 	console.log(interviews);
 	for(u in interviews){

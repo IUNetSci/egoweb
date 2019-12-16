@@ -20,10 +20,28 @@
         </div>
     </div>
     <div class="panel-footer text-center">
-        <button class="btn btn-lg btn-warning disabled" style="color: gray;" disabled ng-if="done[study.ID].length == 0" ng-click="return false">Upload Data (0)<br /><small>For
+
+
+
+
+
+
+        <button class="btn btn-lg btn-warning disabled" style="color: gray;" disabled ng-if="done[study.ID].length == 0" ng-click="return false">Upload COMPLETED Interviews(0)<br /><small>For
 	        {{ study.NAME }}</small></button>
-        <button class="btn btn-lg btn-warning" style="color: black;" ng-if="done[study.ID].length > 0" ng-click="upload(study.ID)">Upload Interviews ({{ done[study.ID].length }})<br /><small>For
-	        {{ study.NAME }}</small></button>
+        <button class="btn btn-lg btn-warning" style="color: black;"  ng-if="done[study.ID].length > 0"  ng-click="upload(study.ID)">Upload COMPLETED Interviews({{ done[study.ID].length }})<br /><small>For
+            {{ study.NAME }}</small></button>
+            
+<br /><br />
+            
+
+            <button class="btn btn-sm btn-secondary disabled" style="color: gray;" disabled ng-if="interviews[study.ID].length - done[study.ID].length == 0" ng-click="return false">Upload INcomplete Interviews (0)<br /><small>For
+                    <!-- <button class="btn btn-lg btn-secondary disabled" style="color: gray;" disabled ng-if="done[study.ID].length == 0" ng-click="return false">Upload Data (0)<br /><small>For -->
+                        {{ study.NAME }}</small></button>
+                    <!-- <button class="btn btn-lg btn-secondary" style="color: black;"  ng-click="upload(study.ID)">Upload Interviews ({{ done[study.ID].length }})<br /><small>For -->
+                    <button class="btn btn-sm btn-secondary" style="color: black;" ng-if="interviews[study.ID].length - done[study.ID].length > 0" ng-click="upload(study.ID, true)">Upload INcomplete Interviews ({{ interviews[study.ID].length - done[study.ID].length }})<br /><small>For
+                        {{ study.NAME }}</small></button>
+
+
     </div>
 </div>
 <div ng-if="!studies.length">
