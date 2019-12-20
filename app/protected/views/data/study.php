@@ -149,7 +149,7 @@ Network Statistics
   <tbody>
     <style>
         input[value="Edit"] {
-            display: none;
+            /*display: none;*/
         }
     </style>
 <?php
